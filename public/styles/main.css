@@ -1,5 +1,5 @@
 body {
-    background: #DDDDDD;
+    background: #FFFF;
 }
 
 .navbar {
@@ -9,4 +9,31 @@ body {
 
 .page-container {
     margin-top: 75px;
+}
+
+#loginPage {
+    text-align: center;
+    margin-top: 25vh;
+}
+
+hr {
+    height: 1px;
+    background-color: #80000020
+}
+
+#rosefireButton {
+    display: block;
+    margin: 60px auto;
+    color: white;
+    background: #800000;
+    font-size: 1.1em;
+    padding: 10px 30px;
+    border-radius: 5px;
+    width: 90vw;
+}
+
+@media (min-width: 500px) {
+    #rosefireButton {
+        width: 450px;
+    }
 }
