@@ -10,10 +10,14 @@ body {
     background-color: #800000;
     padding: 0;
     justify-content: center;
+    position: fixed;
 }
 
 .page-container {
-    margin-top: 75px;
+    top: 124px;
+    position: absolute;
+    width: 100vw;
+    padding-top: 30px;
 }
 
 #loginPage {
@@ -107,6 +111,44 @@ hr {
     width: 90px;
     border-radius: 4px
 }
+
+.groups, .individuals, .bills {
+    padding: 0px 20px;
+}
+
+.card-img-top {
+    height: 65px;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 5px;
+}
+
+.card-body {
+    padding: 7px;
+}
+
+.card-columns {
+    padding-bottom: 10px;
+}
+
+.card-title {
+    margin: 0;
+}
+
+.card {
+    display: grid;
+    grid-template-columns: 2fr 3.5fr 2fr;
+}
+
+.card-amount {
+    text-align: center;
+}
+
+.amount {
+    margin: 19px 0;
+}
+
+
+
 
 
 @media (min-width: 500px) {
