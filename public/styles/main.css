@@ -40,7 +40,7 @@ hr {
     width: 90vw;
 }
 
-.nav-tabs .nav-link:hover {
+.nav-tabs .nav-link:hover, .btn:hover, .card-button:hover {
     background-image:  linear-gradient(rgb(0 0 0/30%) 0 0);
     border-color: transparent;
 }
@@ -58,11 +58,7 @@ hr {
 
 .nav-item {
     text-align: center;
-    width: 30%;
-}
-
-.nav-item.expense {
-    width: 40%
+    width: 33.33%;
 }
 
 .row {
@@ -116,18 +112,22 @@ hr {
     padding: 0px 20px;
 }
 
+.card-button {
+    border: none;
+    padding: 0;
+    border-radius: 6px;
+    margin-bottom: 5px;
+}
+
 .card-img-top {
-    height: 65px;
+    height: 66px;
     border-top-right-radius: 0;
     border-bottom-left-radius: 5px;
 }
 
 .card-body {
+    text-align: left;
     padding: 7px;
-}
-
-.card-columns {
-    padding-bottom: 10px;
 }
 
 .card-title {
@@ -139,16 +139,27 @@ hr {
     grid-template-columns: 2fr 3.5fr 2fr;
 }
 
-.card-amount {
-    text-align: center;
-}
-
 .amount {
-    margin: 19px 0;
+    margin: 21px 0;
 }
 
+.btn, .btn:hover, .btn.active, .btn:first-child:active {
+    background-color: #800000;
+    border-color: #800000;
+    color: white;
+}
 
+.btn {
+    width: 100%;
+}
 
+.connect {
+    position: fixed;
+    bottom: 0%;
+    padding: 5px;
+    width: 100%;
+
+}
 
 
 @media (min-width: 500px) {
