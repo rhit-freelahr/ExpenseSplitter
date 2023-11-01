@@ -1,10 +1,15 @@
+* {
+    font-size: 16px;
+}
+
 body {
     background: #FFFF;
 }
 
 .navbar {
     background-color: #800000;
-    color: white;
+    padding: 0;
+    justify-content: center;
 }
 
 .page-container {
@@ -27,10 +32,82 @@ hr {
     color: white;
     background: #800000;
     font-size: 1.1em;
-    padding: 10px 30px;
     border-radius: 5px;
     width: 90vw;
 }
+
+.nav-tabs .nav-link:hover {
+    background-image:  linear-gradient(rgb(0 0 0/30%) 0 0);
+    border-color: transparent;
+}
+
+.nav-tabs {
+    width: 100vw;
+    justify-content: space-evenly;
+    margin-top: 10px;
+}
+
+.nav-tabs .nav-link {
+    color: #FFFF;
+    border-radius: 0;
+}
+
+.nav-item {
+    text-align: center;
+    width: 30%;
+}
+
+.nav-item.expense {
+    width: 40%
+}
+
+.row {
+    width: 95vw;
+}
+
+.search {
+    background-color: #fff;
+    padding: 4px;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.search-1 {
+    position: relative;
+    width: 100%
+}
+
+.search-1 input {
+    height: 45px;
+    border: none;
+    width: 100%;
+    padding-left: 34px;
+    padding-right: 10px;
+    border-right: 2px solid #eee
+}
+
+.search-1 input:focus {
+    border-color: none;
+    box-shadow: none;
+    outline: none
+}
+
+::placeholder {
+    color: #eee;
+}
+
+.search-1 button {
+    position: absolute;
+    right: 1px;
+    top: 0px;
+    border: none;
+    height: 45px;
+    background-color: #800000;
+    color: #fff;
+    width: 90px;
+    border-radius: 4px
+}
+
 
 @media (min-width: 500px) {
     #rosefireButton {
