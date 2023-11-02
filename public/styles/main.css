@@ -14,10 +14,12 @@ body {
 }
 
 .page-container {
-    top: 124px;
-    position: absolute;
-    width: 100vw;
+    position: relative;
+    width: 100%;
+    max-width: 500px;
     padding-top: 30px;
+    margin: 0 auto;
+    top: 124px;
 }
 
 #loginPage {
@@ -28,6 +30,14 @@ body {
 hr {
     height: 1px;
     background-color: #80000020
+}
+
+h1 {
+    font-size: 28px;
+}
+
+p {
+    margin: 0;
 }
 
 #rosefireButton {
@@ -110,13 +120,25 @@ hr {
 
 .groups, .individuals, .bills {
     padding: 0px 20px;
+    max-width: 600px;
+}
+
+.card-groups, .card-individuals {
+    display: grid;
+    justify-items: center;
+    grid-template-columns: 1fr;
 }
 
 .card-button {
+    width: 350px;
     border: none;
     padding: 0;
     border-radius: 6px;
     margin-bottom: 5px;
+}
+
+.card-image {
+    text-align: left;
 }
 
 .card-img-top {
@@ -137,20 +159,21 @@ hr {
 .card {
     display: grid;
     grid-template-columns: 2fr 3.5fr 2fr;
+    align-items: center;
 }
 
-.amount {
-    margin: 21px 0;
-}
-
-.btn, .btn:hover, .btn.active, .btn:first-child:active {
+.rose-button, .rose-button:hover, .rose-button.active, .rose-button:first-child:active {
     background-color: #800000;
     border-color: #800000;
     color: white;
 }
 
-.btn {
+.full-button {
     width: 100%;
+}
+
+.half-button {
+    width: 49%;
 }
 
 .connect {
