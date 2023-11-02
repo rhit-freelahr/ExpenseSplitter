@@ -28,9 +28,8 @@
     </ul>
   </nav>
 
-  <div id="accountPage" class="page-container">
-      <div id="accountPage" class="container page-container">
-    <button class="card-button" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-bs-whatever="@mdo">
+  <div id="accountPage" class="container page-container">
+    <button class="card-button" data-bs-toggle="modal" data-bs-target="#changeNameModal" data-bs-whatever="@mdo">
       <div class="card">
         <div class="card-body">
           <h2>CHANGE NAME</h2>
@@ -38,7 +37,7 @@
       </div>
     </button>
     <br>
-    <button class="card-button" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-bs-whatever="@mdo">
+    <button class="card-button" data-bs-toggle="modal" data-bs-target="#changePictureModal" data-bs-whatever="@mdo">
       <div class="card">
         <div class="card-body">
           <h2>CHANGE PROFILE PICTURE</h2>
@@ -46,13 +45,56 @@
       </div>
     </button>
     <br>
-    <button class="card-button" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-bs-whatever="@mdo">
+    <button class="card-button">
       <div class="card">
         <div class="card-body">
-          <h2>LOG OUT</h2>
+          <h2 style="color: red">LOG OUT</h2>
         </div>
       </div>
     </button>
+  </div>
+
+  <!--Change Name Modal-->
+
+  <div class="modal fade" id="changeNameModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Change Name</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Name:</label>
+              <input type="text" class="form-control" id="recipient-name">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn rose-button">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Change Profile Picture Modal-->
+
+  <div class="modal fade" id="changePictureModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Change Profile Picture</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="file" class="form-control" id="customFile" />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary full-button" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="scripts/jquery.min.js"></script>

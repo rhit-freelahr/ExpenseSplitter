@@ -161,6 +161,10 @@ p {
     padding: 7px;
 }
 
+#accountPage .card-body {
+    height: 70px;
+}
+
 .card-title {
     margin: 0;
 }
@@ -171,10 +175,12 @@ p {
     align-items: center;
 }
 
-#accountPage .card-body {
-    line-height: 70px;
-    height: 70px;
-    text-align: center;
+#accountPage h2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
 }
 
 .rose-button, .rose-button:hover, .rose-button.active, .rose-button:first-child:active {
@@ -204,7 +210,6 @@ p {
         orange 0); 
 } 
 
-body, 
 .piechart { 
     display: flex; 
     justify-content: center; 
