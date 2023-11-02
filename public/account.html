@@ -29,17 +29,30 @@
   </nav>
 
   <div id="accountPage" class="page-container">
-      <div class="acc-buttons">
-        <div class="name">
-          <button class="button">Change Name</button>
-        </div>
-        <div class="profile picture">
-          <button class="button">Change Profile Picture</button>
-        </div>
-        <div class="logout">
-            <button class="button">LOGOUT</button>
+      <div id="accountPage" class="container page-container">
+    <button class="card-button" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-bs-whatever="@mdo">
+      <div class="card">
+        <div class="card-body">
+          <h2>CHANGE NAME</h2>
         </div>
       </div>
+    </button>
+    <br>
+    <button class="card-button" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-bs-whatever="@mdo">
+      <div class="card">
+        <div class="card-body">
+          <h2>CHANGE PROFILE PICTURE</h2>
+        </div>
+      </div>
+    </button>
+    <br>
+    <button class="card-button" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-bs-whatever="@mdo">
+      <div class="card">
+        <div class="card-body">
+          <h2>LOG OUT</h2>
+        </div>
+      </div>
+    </button>
   </div>
 
   <script src="scripts/jquery.min.js"></script>
