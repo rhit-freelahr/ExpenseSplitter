@@ -10,6 +10,7 @@
     integrity='sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg=='
     crossorigin='anonymous' />
   <link rel="stylesheet" href="styles/main.css">
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
   <title>ExpenseSplitter</title>
 </head>
 
@@ -46,13 +47,41 @@
     <body> 
       <h1>FINANCES</h1> 
       <hr>
-      <div class="piechart"></div> 
+      <div class="piechart">
+        <div id="piechart" style="width: 500px; height: 500px;"></div>
+      </div>
     </body> 
-
-    <br>
     <div class="bills">
       <h1>BILLS</h1>
       <hr>
+      <div class="history">
+        <div class="card-history">
+          <div class="card-columns">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="history-title">Expense Name</h5>
+                <p class="history-text"><small class="text-muted">Paid Date</small></p>
+              </div>
+              <div class="history-amount">
+                <p class="amount">amount</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-columns">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="history-title">Expense Name</h5>
+                <p class="history-text"><small class="text-muted">Paid Date</small></p>
+              </div>
+              <div class="history-amount">
+                <p class="amount">amount</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+      </div>
     </div>
   </div>
   <div id="finance-button-footer">

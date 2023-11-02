@@ -27,4 +27,22 @@ exampleModal.addEventListener('show.bs.modal', event => {
 })
 }
 
+// Piechart script: documentation @ https://developers.google.com/chart/interactive/docs/gallery/piechart
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+function drawChart() {
+  var data = google.visualization.arrayToDataTable([
+  ['Expense', 'Amount Owed'], ['GROCERIES', 20],
+  ['FAST FOOD', 10], ['TRIP', 50],
+  ['GAMES', 10], ['SNACKS', 15]
+  ]);
+  var options = {
+    title: 'MY FINANCES',
+    fontName: 'Roboto',
+    legend: {position: 'top', maxLines: '2'}
+  };
+  var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+  chart.draw(data, options);
+}
+
 rhit.main();
