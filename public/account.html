@@ -53,6 +53,10 @@
       </div>
     </button>
   </div>
+  <div id="account-button-footer">
+    <button type="button" id="manage-button" class="btn full-button rose-button" data-bs-toggle="modal" data-bs-target="#fundsModal">MANAGE FUNDS
+    </button>
+  </div>
 
   <!--Change Name Modal-->
 
@@ -69,6 +73,7 @@
               <label for="recipient-name" class="col-form-label">Name:</label>
               <input type="text" class="form-control" id="recipient-name">
             </div>
+          </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -92,6 +97,31 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary full-button" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Manage Funds Modal-->
+  <div class="modal fade" id="fundsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Expense</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">ADD FUNDS:</label>
+              <input type="text" class="form-control" id="recipient-name">
+              <p class="col-form-label">CURRENT BALANCE: $20</p>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Withdraw</button>
+          <button type="button" class="btn rose-button">Deposit</button>
         </div>
       </div>
     </div>

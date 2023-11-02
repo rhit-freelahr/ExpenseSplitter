@@ -219,11 +219,23 @@ p {
     width: 49%;
 }
 
-.connect {
+#expense-button-footer, #account-button-footer, #finance-button-footer {
     position: fixed;
+    display: flex;
+    justify-content: space-evenly;
     bottom: 0%;
     padding: 5px;
     width: 100%;
+}
+
+#expense-button-footer #connect-button {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#expense-button-footer #manage-button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
 
 
