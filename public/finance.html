@@ -19,8 +19,12 @@
     <div class="search">
       <div class="row">
         <div class="col-md-13">
-          <div class="search-1">
-            <input type="text" placeholder="Search Bar">
+          <div class="search-1" style="display:inline-flex;">
+            <div class="balance-display">
+              <p id="current-balance">$20</p>
+            </div>
+            <hr class="vl">
+            <input type="text" placeholder="Search Bar" style="padding-left: 10px">
             <button>Search</button> 
           </div>
         </div>
@@ -28,10 +32,10 @@
     </div>
     <ul class="nav nav-tabs">
       <li class="nav-item">
-        <a class="nav-link active" href="finance.html">FINANCE</a>
+        <a class="nav-link" href="finance.html">FINANCE</a>
       </li>
       <li class="nav-item expense">
-        <a class="nav-link" href="expense.html">EXPENSES</a>
+        <a class="nav-link active" href="expense.html">EXPENSES</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="account.html">ACCOUNT</a>
@@ -43,14 +47,13 @@
     <br>
     -->
     <!-- <title>Pie Chart</title>  -->
-  
-    <body> 
+    <div class="finances">
       <h1>FINANCES</h1> 
       <hr>
       <div class="piechart">
         <div id="piechart" style="width: 500px; height: 500px;"></div>
       </div>
-    </body> 
+    </div>
     <div class="bills">
       <h1>BILLS</h1>
       <hr>
@@ -102,7 +105,7 @@
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label">ADD FUNDS:</label>
               <input type="text" class="form-control" id="recipient-name">
-              <p class="col-form-label">CURRENT BALANCE: $20</p>
+              <p class="col-form-label">CURRENT BALANCE: <span id="current-balance">$20</span></p>
             </div>
           </form>
         </div>
