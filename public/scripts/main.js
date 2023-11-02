@@ -37,7 +37,6 @@ function drawChart() {
   ['GAMES', 10], ['SNACKS', 15]
   ]);
   var options = {
-    title: 'MY FINANCES',
     fontName: 'Roboto',
     legend: {position: 'top', maxLines: '2'}
   };
