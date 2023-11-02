@@ -8,7 +8,6 @@ rhit.FB_KEY_DESCRIPTION = "description";
 rhit.FB_KEY_AMOUNT = "amount";
 rhit.FB_KEY_FROM = "from";
 
-
 rhit.main = function () {
 
 }
