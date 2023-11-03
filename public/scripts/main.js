@@ -30,11 +30,12 @@ function drawChart() {
   chart.draw(data, options);
 }
 
-//rhit.fbFinanceManager ------>
- 
-//rhit.fbExpenseManager ------>
- 
-//rhit.fbAccountManager ------>
+//rhit.fbFinanceManager      ------>
+//rhit.FinancePageController ------>
+//rhit.fbExpenseManager      ------>
+//rhit.ExpensePageController ------>
+//rhit.fbAccountManager      ------>
+//rhit.AccountPageController ------>
  
 rhit.LoginPageController = class {
   constructor() {
@@ -106,7 +107,7 @@ rhit.initializePage = function () {
   if (document.querySelector("#financePage")) {
     const uid = urlParams.get("uid");
     rhit.fbFinanceManager = new rhit.fbFinanceManager(uid);
-    new rhit.ListPageController();
+    new rhit.FinancePageController();
   }
  
   if (document.querySelector("#expensePage")) {
@@ -115,7 +116,7 @@ rhit.initializePage = function () {
       window.location.href = "/";
     }
     rhit.fbExpenseManager = new rhit.fbExpenseManager(captionId);
-    new rhit.PhotoPageController();
+    new rhit.ExpensePageController();
   }
  
   if (document.querySelector("#accountPage")) {
@@ -124,7 +125,7 @@ rhit.initializePage = function () {
       window.location.href = "/";
     }
     rhit.fbAccountManager = new rhit.fbAccountManager(captionId);
-    new rhit.PhotoPageController();
+    new rhit.AccountPageController();
   }
   if (document.querySelector("#loginPage")) {
     new rhit.LoginPageController();
