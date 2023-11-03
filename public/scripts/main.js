@@ -11,12 +11,30 @@ rhit.FB_KEY_PICTURE = "picture";
 rhit.FB_KEY_FUNDS = "funds";
 rhit.FB_KEY_INDIVIDUALS = "individuals";
 
+
+rhit.fbAccountManager = null;
+rhit.AccountPageController = null;
+
 //rhit.fbFinanceManager      ------>
 //rhit.FinancePageController ------>
 //rhit.fbExpenseManager      ------>
 //rhit.ExpensePageController ------>
 //rhit.fbAccountManager      ------>
 //rhit.AccountPageController ------>
+
+
+rhit.AccountPageController = class {
+  constructor() {
+
+  }
+}
+
+function htmlToElement(html) {
+	var template = document.createElement('template');
+	html = html.trim();
+	template.innerHTML = html;
+	return template.content.firstChild;
+}
  
 rhit.LoginPageController = class {
   constructor() {
