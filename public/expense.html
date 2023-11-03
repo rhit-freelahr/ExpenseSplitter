@@ -141,16 +141,16 @@
         <div class="modal-body">
           <form>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Recipients:</label>
-              <input type="text" class="form-control" id="recipient-name">
+              <label for="add-expense-recipients" class="col-form-label">Recipients:</label>
+              <input type="text" class="form-control" id="add-expense-recipients">
             </div>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Description:</label>
-              <input type="text" class="form-control" id="description">
+              <label for="add-expense-description" class="col-form-label">Description:</label>
+              <input type="text" class="form-control" id="add-expense-description">
             </div>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Amount:</label>
-              <input type="text" class="form-control" id="amount">
+              <label for="add-expense-amount" class="col-form-label">Amount:</label>
+              <input type="text" class="form-control" id="add-expense-amount">
             </div>
           </form>
         </div>
@@ -172,16 +172,16 @@
         <div class="modal-body">
           <form>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Recipients:</label>
-              <input type="text" class="form-control" id="recipient-name">
+              <label for="edit-expense-recipients" class="col-form-label">Recipients:</label>
+              <input type="text" class="form-control" id="edit-expense-recipients">
             </div>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Description:</label>
-              <input type="text" class="form-control" id="description">
+              <label for="edit-expense-description" class="col-form-label">Description:</label>
+              <input type="text" class="form-control" id="edit-expense-description">
             </div>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Amount:</label>
-              <input type="text" class="form-control" id="amount">
+              <label for="edit-amount" class="col-form-label">Amount:</label>
+              <input type="text" class="form-control" id="edit-amount">
             </div>
           </form>
         </div>
@@ -224,15 +224,15 @@
         <div class="modal-body">
           <form>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">ADD FUNDS:</label>
-              <input type="text" class="form-control" id="recipient-name">
-              <p class="col-form-label">CURRENT BALANCE: <span id="current-balance">$20</span></p>
+              <label for="funds-field" class="col-form-label">ADD FUNDS:</label>
+              <input type="text" class="form-control" id="funds-field">
+              <p class="col-form-label" id="balance-label">CURRENT BALANCE: <span id="current-balance">$20</span></p>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Withdraw</button>
-          <button type="button" class="btn rose-button">Deposit</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="withdraw-button">Withdraw</button>
+          <button type="button" class="btn rose-button" id="deposit-button">Deposit</button>
         </div>
       </div>
     </div>
@@ -250,26 +250,26 @@
         <div class="modal-body">
           <form>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Name:</label>
+              <label for="group-name" class="col-form-label">Name:</label>
               <input type="text" class="form-control" id="group-name">
             </div>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Description:</label>
-              <input type="text" class="form-control" id="description">
+              <label for="group-description" class="col-form-label">Description:</label>
+              <input type="text" class="form-control" id="group-description">
             </div>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Individuals:</label>
+              <label for="group-individuals-list" class="col-form-label">Individuals:</label>
               <input type="text" class="form-control" id="group-individuals-list">
             </div>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Picture:</label>
+              <label for="group-picture" class="col-form-label">Picture:</label>
               <input type="text" class="form-control" id="group-picture">
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn rose-button">Send</button>
+          <button type="button" class="btn rose-button" id="group-confirm">Confirm</button>
         </div>
       </div>
     </div>
@@ -287,14 +287,14 @@
         <div class="modal-body">
           <form>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Name:</label>
-              <input type="text" class="form-control" id="name">
+              <label for="individual-name" class="col-form-label">Name:</label>
+              <input type="text" class="form-control" id="individual-name">
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn rose-button">Add</button>
+          <button type="button" class="btn rose-button" id="individual-add">Add</button>
         </div>
       </div>
     </div>

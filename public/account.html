@@ -70,8 +70,8 @@
         <div class="modal-body">
           <form>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Name:</label>
-              <input type="text" class="form-control" id="recipient-name">
+              <label for="account-name" class="col-form-label">Name:</label>
+              <input type="text" class="form-control" id="account-name">
             </div>
           </form>
         </div>
@@ -93,7 +93,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <input type="file" class="form-control" id="customFile" />
+          <input type="file" class="form-control" id="account-picture">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary full-button" data-bs-dismiss="modal">Close</button>
@@ -103,7 +103,7 @@
   </div>
 
   <!--Manage Funds Modal-->
-  <div class="modal fade" id="fundsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal fade" id="fundsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
@@ -113,15 +113,15 @@
         <div class="modal-body">
           <form>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">ADD FUNDS:</label>
-              <input type="text" class="form-control" id="recipient-name">
-              <p class="col-form-label">CURRENT BALANCE: $20</p>
+              <label for="funds-field" class="col-form-label">ADD FUNDS:</label>
+              <input type="text" class="form-control" id="funds-field">
+              <p class="col-form-label" id="balance-label">CURRENT BALANCE: <span id="current-balance">$20</span></p>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Withdraw</button>
-          <button type="button" class="btn rose-button">Deposit</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="withdraw-button">Withdraw</button>
+          <button type="button" class="btn rose-button" id="deposit-button">Deposit</button>
         </div>
       </div>
     </div>
