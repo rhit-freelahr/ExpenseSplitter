@@ -1,12 +1,15 @@
 var rhit = rhit || {};
 
-rhit.FB_COLLECTION_BILL = "bill";
-rhit.FB_COLLECTION_INDIVIDUAL = "individual";
-rhit.FB_COLLECTION_GROUP = "group";
+rhit.FB_COLLECTION_BILL = "Bills";
+rhit.FB_COLLECTION_INDIVIDUAL = "Individuals";
+rhit.FB_COLLECTION_GROUP = "Groups";
 rhit.FB_KEY_NAME = "name";
 rhit.FB_KEY_DESCRIPTION = "description";
 rhit.FB_KEY_AMOUNT = "amount";
-rhit.FB_KEY_FROM = "from";
+rhit.FB_KEY_TO = "to";
+rhit.FB_KEY_PICTURE = "picture";
+rhit.FB_KEY_FUNDS = "funds";
+rhit.FB_KEY_INDIVIDUALS = "individuals";
 
 
 rhit.main = function () {
