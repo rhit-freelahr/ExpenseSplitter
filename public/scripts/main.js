@@ -11,12 +11,48 @@ rhit.FB_KEY_PICTURE = "picture";
 rhit.FB_KEY_FUNDS = "funds";
 rhit.FB_KEY_INDIVIDUALS = "individuals";
 
-//rhit.fbFinanceManager      ------>
-//rhit.FinancePageController ------>
-//rhit.fbExpenseManager      ------>
-//rhit.ExpensePageController ------>
-//rhit.fbAccountManager      ------>
-//rhit.AccountPageController ------>
+rhit.FinancePageController = class {
+  constructor() {
+ 
+  }
+  updateBills() {
+ 
+  }
+  _createBill() { // could be unnecessary
+ 
+  }
+}
+rhit.fbFinanceManager = class {
+ 
+}
+rhit.ExpensePageController = class {
+  constructor() {
+ 
+  }
+  updateBills() {
+ 
+  }
+  _createBill() { // could be unnecessary
+ 
+  }
+}
+rhit.fbExpenseManager = class {
+ 
+}
+rhit.AccountPageController = class {
+  constructor() {
+ 
+  }
+  updateBills() {
+ 
+  }
+  _createBill() { // could be unnecessary
+ 
+  }
+}
+rhit.fbAccountManager = class {
+ 
+}
  
 rhit.LoginPageController = class {
   constructor() {
