@@ -11,33 +11,12 @@ rhit.FB_KEY_PICTURE = "picture";
 rhit.FB_KEY_FUNDS = "funds";
 rhit.FB_KEY_INDIVIDUALS = "individuals";
 
-
-rhit.main = function () {
- 
-}
-
-// Piechart script: documentation @ https://developers.google.com/chart/interactive/docs/gallery/piechart
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-function drawChart() {
-  var data = google.visualization.arrayToDataTable([
-  ['Expense', 'Amount Owed'], ['GROCERIES', 20],
-  ['FAST FOOD', 10], ['TRIP', 50],
-  ['GAMES', 10], ['SNACKS', 15]
-  ]);
-  var options = {
-    fontName: 'Roboto',
-    legend: {position: 'top', maxLines: '2'}
-  };
-  var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-  chart.draw(data, options);
-}
-
-//rhit.fbFinanceManager ------>
- 
-//rhit.fbExpenseManager ------>
- 
-//rhit.fbAccountManager ------>
+//rhit.fbFinanceManager      ------>
+//rhit.FinancePageController ------>
+//rhit.fbExpenseManager      ------>
+//rhit.ExpensePageController ------>
+//rhit.fbAccountManager      ------>
+//rhit.AccountPageController ------>
  
 rhit.LoginPageController = class {
   constructor() {
@@ -109,7 +88,7 @@ rhit.initializePage = function () {
   if (document.querySelector("#financePage")) {
     const uid = urlParams.get("uid");
     rhit.fbFinanceManager = new rhit.fbFinanceManager(uid);
-    new rhit.ListPageController();
+    new rhit.FinancePageController();
   }
  
   if (document.querySelector("#expensePage")) {
@@ -118,7 +97,7 @@ rhit.initializePage = function () {
       window.location.href = "/";
     }
     rhit.fbExpenseManager = new rhit.fbExpenseManager(captionId);
-    new rhit.PhotoPageController();
+    new rhit.ExpensePageController();
   }
  
   if (document.querySelector("#accountPage")) {
@@ -127,11 +106,21 @@ rhit.initializePage = function () {
       window.location.href = "/";
     }
     rhit.fbAccountManager = new rhit.fbAccountManager(captionId);
-    new rhit.PhotoPageController();
+    new rhit.AccountPageController();
   }
   if (document.querySelector("#loginPage")) {
     new rhit.LoginPageController();
   }
 }
+
+rhit.main = function () {
+	console.log("Ready");
+	rhit.fbAuthManager = new rhit.fbAuthManager();
+	rhit.fbAuthManager.beginListening(() => {
+		console.log("isSignedIn = ", rhit.fbAuthManager.isSignedIn);
+		rhit.checkForRedirects();
+		rhit.initializePage();
+	});
+};
 
 rhit.main();
