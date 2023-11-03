@@ -8,11 +8,6 @@ rhit.FB_KEY_DESCRIPTION = "description";
 rhit.FB_KEY_AMOUNT = "amount";
 rhit.FB_KEY_FROM = "from";
 
-
-rhit.main = function () {
- 
-}
-
 //rhit.fbFinanceManager      ------>
 //rhit.FinancePageController ------>
 //rhit.fbExpenseManager      ------>
@@ -114,5 +109,15 @@ rhit.initializePage = function () {
     new rhit.LoginPageController();
   }
 }
+
+rhit.main = function () {
+	console.log("Ready");
+	rhit.fbAuthManager = new rhit.fbAuthManager();
+	rhit.fbAuthManager.beginListening(() => {
+		console.log("isSignedIn = ", rhit.fbAuthManager.isSignedIn);
+		rhit.checkForRedirects();
+		rhit.initializePage();
+	});
+};
 
 rhit.main();
