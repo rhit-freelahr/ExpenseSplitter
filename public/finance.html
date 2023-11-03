@@ -32,10 +32,10 @@
     </div>
     <ul class="nav nav-tabs">
       <li class="nav-item">
-        <a class="nav-link" href="finance.html">FINANCE</a>
+        <a class="nav-link active" href="finance.html">FINANCE</a>
       </li>
       <li class="nav-item expense">
-        <a class="nav-link active" href="expense.html">EXPENSES</a>
+        <a class="nav-link" href="expense.html">EXPENSES</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="account.html">ACCOUNT</a>
@@ -43,15 +43,11 @@
     </ul>
   </nav>
   <div id="financePage" class="page-container">
-    <!--potential piechart will go here
-    <br>
-    -->
-    <!-- <title>Pie Chart</title>  -->
     <div class="finances">
       <h1>FINANCES</h1> 
       <hr>
       <div class="piechart">
-        <div id="piechart" style="width: 500px; height: 500px;"></div>
+        <div id="piechart" style="width: inherit; height: 200px;"></div>
       </div>
     </div>
     <div class="bills">
@@ -60,24 +56,38 @@
       <div class="history">
         <div class="card-history">
           <div class="card-columns">
-            <div class="card">
+            <div class="card" id="finance-card">
               <div class="card-body">
-                <h5 class="history-title">Expense Name</h5>
-                <p class="history-text"><small class="text-muted">Paid Date</small></p>
+                <h5 class="card-title">Group Name</h5>
+                <p class="card-text"><small class="text-muted">Paid Date</small></p>
               </div>
-              <div class="history-amount">
-                <p class="amount">amount</p>
+              <div class="card-amount">
+                <hr class="vl" id="bill-vl">
+                <p class="amount" id="bill-amount">amount</p>
               </div>
             </div>
           </div>
           <div class="card-columns">
-            <div class="card">
+            <div class="card" id="finance-card">
               <div class="card-body">
-                <h5 class="history-title">Expense Name</h5>
-                <p class="history-text"><small class="text-muted">Paid Date</small></p>
+                <h5 class="card-title">Group Name</h5>
+                <p class="card-text"><small class="text-muted">Paid Date</small></p>
               </div>
-              <div class="history-amount">
-                <p class="amount">amount</p>
+              <div class="card-amount">
+                <hr class="vl" id="bill-vl">
+                <p class="amount" id="bill-amount">amount</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-columns">
+            <div class="card" id="finance-card">
+              <div class="card-body">
+                <h5 class="card-title">Group Name</h5>
+                <p class="card-text"><small class="text-muted">Paid Date</small></p>
+              </div>
+              <div class="card-amount">
+                <hr class="vl" id="bill-vl">
+                <p class="amount" id="bill-amount">amount</p>
               </div>
             </div>
           </div>

@@ -1,3 +1,4 @@
+/* General Stuff */
 * {
     font-size: 16px;
 }
@@ -22,14 +23,6 @@ body {
     top: 124px;
 }
 
-#accountPage.page-container {
-    max-width: 800px;
-}
-
-#loginPage {
-    text-align: center;
-    margin-top: 25vh;
-}
 
 hr {
     height: 1px;
@@ -44,6 +37,18 @@ p {
     margin: 0;
 }
 
+.nav-tabs .nav-link:hover, .btn:hover, .card-button:hover {
+    background-image:  linear-gradient(rgb(0 0 0/30%) 0 0);
+    border-color: transparent;
+}
+
+.groups, .individuals, .bills, .finances {
+    padding: 0px 20px;
+    max-width: 600px;
+}
+
+/* LOGIN PAGE */
+
 #rosefireButton {
     display: block;
     margin: 60px auto;
@@ -54,10 +59,13 @@ p {
     width: 90vw;
 }
 
-.nav-tabs .nav-link:hover, .btn:hover, .card-button:hover {
-    background-image:  linear-gradient(rgb(0 0 0/30%) 0 0);
-    border-color: transparent;
+#loginPage {
+    text-align: center;
+    margin-top: 25vh;
 }
+
+
+/* Navbar */
 
 .nav-tabs {
     width: 100vw;
@@ -122,10 +130,23 @@ p {
     border-radius: 4px
 }
 
-.groups, .individuals, .bills, .finances {
-    padding: 0px 20px;
-    max-width: 600px;
+/* Finance Page */
+
+#financePage .card-amount {
+    display: inline-flex; 
+    justify-content: end; 
+    align-items: center;
 }
+
+#bill-vl {
+    height: 62px; 
+    margin: 0;
+}
+
+#bill-amount {
+    padding: 0 7px;
+}
+
 
 .history-amount {
     display: grid;
@@ -133,6 +154,20 @@ p {
     margin-right: 10px;
     margin-bottom: 10px;
     grid-template-columns: 1fr;
+}
+
+/* Cards */
+
+#expense-card {
+    display: grid;
+    grid-template-columns: 2fr 3.5fr 2fr;
+    align-items: center;
+}
+
+#finance-card {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    align-items: center;
 }
 
 .card-groups, .card-individuals {
@@ -177,11 +212,6 @@ p {
     margin: 0;
 }
 
-#expensePage .card {
-    display: grid;
-    grid-template-columns: 2fr 3.5fr 2fr;
-    align-items: center;
-}
 
 #accountPage h2 {
     position: absolute;
@@ -205,7 +235,12 @@ p {
     display: block;
     margin-left: auto;
     margin-right: auto;
+    align-items: center;
 } 
+
+#piechart {
+    margin: 0;
+}
 
 .half-button {
     width: 49%;
@@ -220,17 +255,17 @@ p {
     width: 100%;
 }
 
-#expense-button-footer #connect-button {
+#expense-button-footer #connect-button, #editExpensebutton {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
 
-#expense-button-footer #manage-button {
+#expense-button-footer #manage-button, #payExpensebutton {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
 
-.card-history .card-columns {
+#financePage .card-columns {
     padding-bottom: 5px;
 }
 
@@ -246,6 +281,16 @@ p {
     border-left: 2px solid black;
     height: 40px;
     margin: 2px 0;
+}
+
+#addExpensebutton {
+    border-radius: 0;
+}
+
+/* Account Page */ 
+
+#accountPage.page-container {
+    max-width: 800px;
 }
 
 @media (min-width: 500px) {
