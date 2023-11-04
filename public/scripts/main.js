@@ -33,6 +33,7 @@ rhit.FinancePageController = class {
 
   }
 }
+
 rhit.fbFinanceManager = class {
 
 }
@@ -131,32 +132,19 @@ rhit.checkForRedirects = function () {
 }
  
 rhit.initializePage = function () {
-  const urlParams = new URLSearchParams(window.location.search);
   if (document.querySelector("#financePage")) {
-    const uid = urlParams.get("uid");
-    rhit.fbFinanceManager = new rhit.fbFinanceManager(uid);
+    rhit.fbFinanceManager = new rhit.fbFinanceManager();
     new rhit.FinancePageController();
   }
  
   if (document.querySelector("#expensePage")) {
-    const captionId = urlParams.get("id");
-    if (!captionId) {
-      window.location.href = "/";
-    }
-    rhit.fbExpenseManager = new rhit.fbExpenseManager(captionId);
+    rhit.fbExpenseManager = new rhit.fbExpenseManager();
     new rhit.ExpensePageController();
   }
  
   if (document.querySelector("#accountPage")) {
-    const captionId = urlParams.get("id");
-    if (!captionId) {
-      window.location.href = "/";
-    }
-    rhit.fbAccountManager = new rhit.fbAccountManager(captionId);
+    rhit.fbAccountManager = new rhit.fbAccountManager();
     new rhit.AccountPageController();
-  }
-  if (document.querySelector("#loginPage")) {
-    new rhit.LoginPageController();
   }
 }
 
@@ -168,6 +156,22 @@ rhit.main = function () {
 		rhit.checkForRedirects();
 		rhit.initializePage();
 	});
+  if (document.querySelector("#loginPage")) {
+    new rhit.LoginPageController();
+  }
 };
 
 rhit.main();
+
+    // ref = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL);
+    // console.log(ref);
+    // ref.doc("test").set({
+    //   [rhit.FB_KEY_FUNDS]: 20,
+    //   [rhit.FB_KEY_NAME]: "Hunter",
+    //   [rhit.FB_KEY_PICTURE]: "hello",
+    // });
+
+    // ref.doc("test").collection(rhit.FB_COLLECTION_BILL).add({
+    //   [rhit.FB_KEY_AMOUNT]: 25,
+    //   [rhit.FB_KEY_FROM]: "Hunter",
+    // });
