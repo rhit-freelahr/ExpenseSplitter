@@ -56,6 +56,16 @@ rhit.AccountPageController = class {
     document.querySelector("#signOut").onclick = (event) => {
       rhit.fbAuthManager.signOut();
     }
+    document.querySelector("#submitChangeName").onclick = (event) => {
+      const name = document.querySelector("#account-name").value;
+      console.log(name);
+      rhit.fbAccountManager.updateName(name);
+    }
+    document.querySelector("#submitChangeProfilePicture").onclick = (event) => {
+      const profile = document.querySelector("#account-picture").value;
+      console.log(profile);
+      rhit.fbAccountManager.updatePicture(profile);
+    }
   }
   updateBills() {
 
@@ -72,33 +82,52 @@ rhit.Account = class {
     this.picture = picture;
   }
 }
+
 rhit.fbAccountManager = class {
   constructor(user) {
+    this.user = user;
     this._unsubscribe = null;
     this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(user.uid); //uid is the username such as freelahr
     this._documentSnapshot = {};
   }
 
   beginListening(changeListener) {
+    console.log(this._ref);
 		this._unsubscribe = this._ref.onSnapshot((doc) => {
+      console.log(doc);
 			if(doc.exists) {
-				this._documentSnapshot = doc;	
-				console.log(this.quote);
+				this._documentSnapshot = doc;
 				changeListener();
 			} else {
-
+        this._ref.set({
+          [rhit.FB_KEY_FUNDS]: 0,
+          [rhit.FB_KEY_NAME]: this.user.uid,
+          [rhit.FB_KEY_PICTURE]: "https://www.getfoundquick.com/wp-content/uploads/2014/01/Capture-1.jpg", 
+        })
 			}
 		});
 	}
   stopListening() {
 	  this._unsubscribe();
 	}
-  update(name, picture, funds) {
-    this._ref.update({
-			[rhit.FB_KEY_FUNDS]: funds,
-			[rhit.FB_KEY_NAME]: name,
-			[rhit.FB_KEY_PICTURE]: picture,
+  updateName(name) {
+    this._ref.update(rhit.FB_KEY_NAME, name)
+		.then(function () {
 		})
+		.catch(function (error) {
+			console.error("Error ", error);
+		});
+  }
+  updateFunds(funds) {
+    this._ref.update(rhit.FB_KEY_FUNDS, funds)
+		.then(function () {
+		})
+		.catch(function (error) {
+			console.error("Error ", error);
+		});
+  }
+  updatePicture(picture) {
+    this._ref.update(rhit.FB_KEY_PICTURE, picture)
 		.then(function () {
 		})
 		.catch(function (error) {

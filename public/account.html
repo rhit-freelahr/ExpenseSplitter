@@ -77,7 +77,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn rose-button">Save</button>
+          <button type="button" class="btn rose-button" id="submitChangeName">Save</button>
         </div>
       </div>
     </div>
@@ -93,10 +93,12 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <input type="file" class="form-control" id="account-picture">
+          <label for="account-picture" class="col-form-label">Profile Picture:</label>
+          <input type="text" class="form-control" id="account-picture">
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary full-button" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn rose-button" id="submitChangeProfilePicture">Save</button>
         </div>
       </div>
     </div>
