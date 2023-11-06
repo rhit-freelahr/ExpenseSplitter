@@ -53,7 +53,9 @@ rhit.fbExpenseManager = class {
 }
 rhit.AccountPageController = class {
   constructor() {
-
+    document.querySelector("#signOut").onclick = (event) => {
+      rhit.fbAuthManager.signOut();
+    }
   }
   updateBills() {
 
@@ -62,8 +64,47 @@ rhit.AccountPageController = class {
 
   }
 }
-rhit.fbAccountManager = class {
 
+rhit.Account = class {
+  constructor(funds, name, picture) {
+    this.funds = funds;
+    this.name = name;
+    this.picture = picture;
+  }
+}
+rhit.fbAccountManager = class {
+  constructor(user) {
+    this._unsubscribe = null;
+    this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(user.uid); //uid is the username such as freelahr
+    this._documentSnapshot = {};
+  }
+
+  beginListening(changeListener) {
+		this._unsubscribe = this._ref.onSnapshot((doc) => {
+			if(doc.exists) {
+				this._documentSnapshot = doc;	
+				console.log(this.quote);
+				changeListener();
+			} else {
+
+			}
+		});
+	}
+  stopListening() {
+	  this._unsubscribe();
+	}
+  update(name, picture, funds) {
+    this._ref.update({
+			[rhit.FB_KEY_FUNDS]: funds,
+			[rhit.FB_KEY_NAME]: name,
+			[rhit.FB_KEY_PICTURE]: picture,
+		})
+		.then(function () {
+		})
+		.catch(function (error) {
+			console.error("Error ", error);
+		});
+  }
 }
  
 rhit.LoginPageController = class {
@@ -119,6 +160,9 @@ rhit.fbAuthManager = class {
   get uid() {
     return this._user.uid;
   }
+  get user() {
+    return this._user;
+  }
 }
  
 rhit.checkForRedirects = function () {
@@ -132,6 +176,9 @@ rhit.checkForRedirects = function () {
 }
  
 rhit.initializePage = function () {
+  if(rhit.fbAuthManager.isSignedIn) {
+    rhit.fbAccountManager = new rhit.fbAccountManager(rhit.fbAuthManager.user);
+  }
   if (document.querySelector("#financePage")) {
     rhit.fbFinanceManager = new rhit.fbFinanceManager();
     new rhit.FinancePageController();
@@ -143,7 +190,6 @@ rhit.initializePage = function () {
   }
  
   if (document.querySelector("#accountPage")) {
-    rhit.fbAccountManager = new rhit.fbAccountManager();
     new rhit.AccountPageController();
   }
 }
