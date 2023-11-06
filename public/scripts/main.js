@@ -35,11 +35,21 @@ rhit.FinancePageController = class {
 }
 
 rhit.fbFinanceManager = class {
+  constructor() {
+    rhit.fbAccountManager.beginListening(this.updateView.bind(this));
+  }
 
+  updateView() {
+    document.querySelector("#current-balance").innerHTML = `$${rhit.fbAccountManager.funds}`  
+  }
 }
 rhit.ExpensePageController = class {
   constructor() {
+    rhit.fbAccountManager.beginListening(this.updateView.bind(this));
+  }
 
+  updateView() {
+    document.querySelector("#current-balance").innerHTML = `$${rhit.fbAccountManager.funds}`  
   }
   updateBills() {
 
@@ -58,14 +68,18 @@ rhit.AccountPageController = class {
     }
     document.querySelector("#submitChangeName").onclick = (event) => {
       const name = document.querySelector("#account-name").value;
-      console.log(name);
       rhit.fbAccountManager.updateName(name);
     }
     document.querySelector("#submitChangeProfilePicture").onclick = (event) => {
       const profile = document.querySelector("#account-picture").value;
-      console.log(profile);
       rhit.fbAccountManager.updatePicture(profile);
     }
+
+    rhit.fbAccountManager.beginListening(this.updateAccount.bind(this));
+  }
+
+  updateAccount() {
+    console.log("hi");
   }
   updateBills() {
 
@@ -75,33 +89,22 @@ rhit.AccountPageController = class {
   }
 }
 
-rhit.Account = class {
-  constructor(funds, name, picture) {
-    this.funds = funds;
-    this.name = name;
-    this.picture = picture;
-  }
-}
-
 rhit.fbAccountManager = class {
-  constructor(user) {
-    this.user = user;
+  constructor() {
     this._unsubscribe = null;
-    this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(user.uid); //uid is the username such as freelahr
+    this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(rhit.fbAuthManager.uid); //uid is the username such as freelahr
     this._documentSnapshot = {};
   }
 
   beginListening(changeListener) {
-    console.log(this._ref);
 		this._unsubscribe = this._ref.onSnapshot((doc) => {
-      console.log(doc);
 			if(doc.exists) {
 				this._documentSnapshot = doc;
 				changeListener();
 			} else {
         this._ref.set({
           [rhit.FB_KEY_FUNDS]: 0,
-          [rhit.FB_KEY_NAME]: this.user.uid,
+          [rhit.FB_KEY_NAME]: rhit.fbAuthManager.uid,
           [rhit.FB_KEY_PICTURE]: "https://www.getfoundquick.com/wp-content/uploads/2014/01/Capture-1.jpg", 
         })
 			}
@@ -133,6 +136,18 @@ rhit.fbAccountManager = class {
 		.catch(function (error) {
 			console.error("Error ", error);
 		});
+  }
+
+  get funds() {
+    return this._documentSnapshot.get(rhit.FB_KEY_FUNDS);
+  }
+
+  get name() {
+    return this._documentSnapshot.get(rhit.FB_KEY_NAME);
+  }
+
+  get picture() {
+    return this._documentSnapshot.get(rhit.FB_KEY_PICTURE);
   }
 }
  
