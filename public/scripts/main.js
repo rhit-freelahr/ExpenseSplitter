@@ -21,6 +21,12 @@ rhit.AccountPageController = null;
 //rhit.ExpensePageController ------>
 //rhit.fbAccountManager      ------>
 //rhit.AccountPageController ------>
+function htmlToElement(html) {
+	var template = document.createElement('template');
+	html = html.trim();
+	template.innerHTML = html;
+	return template.content.firstChild;
+}
 
 rhit.FinancePageController = class {
   constructor() {
@@ -43,13 +49,57 @@ rhit.fbFinanceManager = class {
     document.querySelector("#current-balance").innerHTML = `$${rhit.fbAccountManager.funds}`  
   }
 }
+
 rhit.ExpensePageController = class {
   constructor() {
-    rhit.fbAccountManager.beginListening(this.updateView.bind(this));
+
+    document.querySelector("#group-confirm").onclick = (event) => {
+      const individuals = document.querySelector("#group-individuals-list").value;
+      const groupMembers = individuals.split(', ');
+      const name = document.querySelector("#group-name").value;
+      const description = document.querySelector("#group-description").value;
+      const picture = document.querySelector("#group-picture").value;
+      rhit.fbExpenseManager.add(name, description, groupMembers, picture);
+    }
+    rhit.fbAccountManager.beginListening(this.updateNavBar.bind(this));
+    rhit.fbExpenseManager.beginListening(this.updateList.bind(this));
   }
 
-  updateView() {
+  updateNavBar() {
     document.querySelector("#current-balance").innerHTML = `$${rhit.fbAccountManager.funds}`  
+  }
+  updateList() {
+    const groupList = htmlToElement('<div class="card-groups"></div>');
+    for(let i = 0; i < rhit.fbExpenseManager.length; i++) {
+      const group = rhit.fbExpenseManager.getGroupAtIndex(i);
+      const newcard = this._createGroup(group);
+
+      groupList.appendChild(newcard);
+    }
+    const oldList = document.querySelector(".card-groups");
+    oldList.removeAttribute("class");
+    oldList.hidden = true;
+    oldList.parentElement.appendChild(groupList);
+  }
+  _createGroup(group) {
+    return htmlToElement(
+      `<button class="card-button" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-bs-whatever="@mdo">
+      <div class="card-columns">
+        <div class="card" id="expense-card">
+          <div class="card-image">
+            <img class="card-img-top" src="${group.picture}" alt="Group Image">
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">${group.name}</h5>
+            <p class="card-text"><small class="text-muted">${group.description}</small></p>
+          </div>
+          <div class="card-amount">
+            <p class="amount"></p>
+          </div>
+        </div>
+      </div>
+    </button>`
+    );
   }
   updateBills() {
 
@@ -58,8 +108,53 @@ rhit.ExpensePageController = class {
 
   }
 }
+rhit.Group = class {
+  constructor(description, individuals, name, picture) {
+    this.description = description;
+    this.individuals = individuals;
+    this.name = name;
+    this.picture = picture;
+  }
+}
 rhit.fbExpenseManager = class {
+  constructor() {
+    this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_GROUP);
+    this._documentSnapshots = [];
+    this._unsubscribe = null;
+  }
 
+  add(name, description, individuals, picture) {
+    this._ref.add({
+      [rhit.FB_KEY_DESCRIPTION]: description,
+      [rhit.FB_KEY_INDIVIDUALS]: individuals,
+      [rhit.FB_KEY_NAME]: name,
+      [rhit.FB_KEY_PICTURE]: picture,
+    })
+
+  }
+  beginListening(changeListener) {
+    let query = this._ref;
+    this._unsubscribe = query.onSnapshot((querySnapshot) => {
+      this._documentSnapshots = querySnapshot.docs;
+      changeListener();
+   });
+  }
+  stopListening() {   
+		this._unsubscribe();
+	}
+  get length() {    
+		return this._documentSnapshots.length;
+	}
+  getGroupAtIndex(index) {  
+		const docSnapshot = this._documentSnapshots[index];  
+		const group = new rhit.Group(
+			docSnapshot.get(rhit.FB_KEY_DESCRIPTION),
+			docSnapshot.get(rhit.FB_KEY_INDIVIDUALS),
+      docSnapshot.get(rhit.FB_KEY_NAME),
+      docSnapshot.get(rhit.FB_KEY_PICTURE)
+		);
+		return group;
+	}
 }
 rhit.AccountPageController = class {
   constructor() {
@@ -242,7 +337,6 @@ rhit.main = function () {
 	console.log("Ready");
 	rhit.fbAuthManager = new rhit.fbAuthManager();
 	rhit.fbAuthManager.beginListening(() => {
-		console.log("isSignedIn = ", rhit.fbAuthManager.isSignedIn);
 		rhit.checkForRedirects();
 		rhit.initializePage();
 	});
