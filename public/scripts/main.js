@@ -55,11 +55,15 @@ rhit.ExpensePageController = class {
 
     document.querySelector("#group-confirm").onclick = (event) => {
       const individuals = document.querySelector("#group-individuals-list").value;
-      const groupMembers = individuals.split(', ');
+      const groupMembers = individuals.split(',');
+      groupMembers.push(rhit.fbAuthManager.uid);
       const name = document.querySelector("#group-name").value;
       const description = document.querySelector("#group-description").value;
       const picture = document.querySelector("#group-picture").value;
       rhit.fbExpenseManager.add(name, description, groupMembers, picture);
+    }
+    document.querySelector("#addExpensebutton").onclick = (event) => {
+      document.querySelector("#add-expense-recipients").defaultValue = "hello";
     }
     rhit.fbAccountManager.beginListening(this.updateNavBar.bind(this));
     rhit.fbExpenseManager.beginListening(this.updateList.bind(this));
@@ -72,14 +76,20 @@ rhit.ExpensePageController = class {
     const groupList = htmlToElement('<div class="card-groups"></div>');
     for(let i = 0; i < rhit.fbExpenseManager.length; i++) {
       const group = rhit.fbExpenseManager.getGroupAtIndex(i);
-      const newcard = this._createGroup(group);
 
-      groupList.appendChild(newcard);
+      const id = rhit.fbAuthManager.uid;
+      if(this.inGroup(id,group)) {
+        const newcard = this._createGroup(group);
+        groupList.appendChild(newcard);
+      }
     }
     const oldList = document.querySelector(".card-groups");
     oldList.removeAttribute("class");
     oldList.hidden = true;
     oldList.parentElement.appendChild(groupList);
+  }
+  inGroup(id, group) {
+    return group.individuals.includes(id);
   }
   _createGroup(group) {
     return htmlToElement(
@@ -201,7 +211,7 @@ rhit.fbAccountManager = class {
           [rhit.FB_KEY_FUNDS]: 0,
           [rhit.FB_KEY_NAME]: rhit.fbAuthManager.uid,
           [rhit.FB_KEY_PICTURE]: "https://www.getfoundquick.com/wp-content/uploads/2014/01/Capture-1.jpg", 
-        })
+        });
 			}
 		});
 	}
