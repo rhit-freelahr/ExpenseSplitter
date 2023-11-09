@@ -10,6 +10,7 @@ rhit.FB_KEY_FROM = "from";
 rhit.FB_KEY_PICTURE = "picture";
 rhit.FB_KEY_FUNDS = "funds";
 rhit.FB_KEY_INDIVIDUALS = "individuals";
+rhit.FB_KEY_ID = "id";
 
 
 rhit.fbAccountManager = null;
@@ -21,6 +22,17 @@ rhit.AccountPageController = null;
 //rhit.ExpensePageController ------>
 //rhit.fbAccountManager      ------>
 //rhit.AccountPageController ------>
+
+
+function defualtInputs(id) {
+  const ref = firebase.firestore().collection(rhit.FB_COLLECTION_GROUP).doc(id).get();
+  ref.then(snap => {
+    const data = snap.data();
+    document.querySelector("#addExpensebutton").onclick = (event) => {
+      document.querySelector("#add-expense-recipients").defaultValue = data.individuals.toString();
+    }
+  });
+}
 function htmlToElement(html) {
 	var template = document.createElement('template');
 	html = html.trim();
@@ -62,9 +74,21 @@ rhit.ExpensePageController = class {
       const picture = document.querySelector("#group-picture").value;
       rhit.fbExpenseManager.add(name, description, groupMembers, picture);
     }
-    document.querySelector("#addExpensebutton").onclick = (event) => {
-      document.querySelector("#add-expense-recipients").defaultValue = "hello";
+
+    document.querySelector("#sendBill").onclick = (event) => {
+      const individuals = document.querySelector("#add-expense-recipients").value;
+      const groupMembers = individuals.split(',');
+      const description = document.querySelector("#add-expense-description").value;
+      const amount = document.querySelector("#add-expense-amount").value;
+      groupMembers.forEach((member) => {
+        let amountforEach = amount/groupMembers.length;
+
+        let from = rhit.fbAuthManager.uid;
+        console.log(from);
+        this._createBill(amountforEach, from, member, description);
+      })
     }
+    
     rhit.fbAccountManager.beginListening(this.updateNavBar.bind(this));
     rhit.fbExpenseManager.beginListening(this.updateList.bind(this));
   }
@@ -76,7 +100,6 @@ rhit.ExpensePageController = class {
     const groupList = htmlToElement('<div class="card-groups"></div>');
     for(let i = 0; i < rhit.fbExpenseManager.length; i++) {
       const group = rhit.fbExpenseManager.getGroupAtIndex(i);
-
       const id = rhit.fbAuthManager.uid;
       if(this.inGroup(id,group)) {
         const newcard = this._createGroup(group);
@@ -93,37 +116,42 @@ rhit.ExpensePageController = class {
   }
   _createGroup(group) {
     return htmlToElement(
-      `<button class="card-button" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-bs-whatever="@mdo">
-      <div class="card-columns">
-        <div class="card" id="expense-card">
-          <div class="card-image">
-            <img class="card-img-top" src="${group.picture}" alt="Group Image">
-          </div>
-          <div class="card-body">
-            <h5 class="card-title">${group.name}</h5>
-            <p class="card-text"><small class="text-muted">${group.description}</small></p>
-          </div>
-          <div class="card-amount">
-            <p class="amount"></p>
+      `<button class="card-button" onclick="defualtInputs(this.id)" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-bs-whatever="@mdo" id="${group.id}">
+        <div class="card-columns">
+          <div class="card" id="expense-card">
+            <div class="card-image">
+              <img class="card-img-top" src="${group.picture}" alt="Group Image">
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">${group.name}</h5>
+              <p class="card-text"><small class="text-muted">${group.description}</small></p>
+            </div>
+            <div class="card-amount">
+              <p class="amount"></p>
+            </div>
           </div>
         </div>
-      </div>
-    </button>`
+      </button>`
     );
   }
   updateBills() {
-
   }
-  _createBill() { // could be unnecessary
-
+  _createBill(amount, from, member, description) {
+    const ref = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(member).collection(rhit.FB_COLLECTION_BILL);
+    ref.add({
+      [rhit.FB_KEY_AMOUNT]: amount,
+      [rhit.FB_KEY_FROM]: from,
+      [rhit.FB_KEY_DESCRIPTION]: description,
+    });
   }
 }
 rhit.Group = class {
-  constructor(description, individuals, name, picture) {
+  constructor(description, individuals, name, picture, id) {
     this.description = description;
     this.individuals = individuals;
     this.name = name;
     this.picture = picture;
+    this.id = id
   }
 }
 rhit.fbExpenseManager = class {
@@ -134,13 +162,14 @@ rhit.fbExpenseManager = class {
   }
 
   add(name, description, individuals, picture) {
-    this._ref.add({
+    const ref = this._ref.doc();
+    ref.set({
       [rhit.FB_KEY_DESCRIPTION]: description,
       [rhit.FB_KEY_INDIVIDUALS]: individuals,
       [rhit.FB_KEY_NAME]: name,
       [rhit.FB_KEY_PICTURE]: picture,
-    })
-
+      [rhit.FB_KEY_ID]: ref.id
+    });
   }
   beginListening(changeListener) {
     let query = this._ref;
@@ -161,7 +190,8 @@ rhit.fbExpenseManager = class {
 			docSnapshot.get(rhit.FB_KEY_DESCRIPTION),
 			docSnapshot.get(rhit.FB_KEY_INDIVIDUALS),
       docSnapshot.get(rhit.FB_KEY_NAME),
-      docSnapshot.get(rhit.FB_KEY_PICTURE)
+      docSnapshot.get(rhit.FB_KEY_PICTURE),
+      docSnapshot.get(rhit.FB_KEY_ID),
 		);
 		return group;
 	}
