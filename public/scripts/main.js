@@ -175,7 +175,6 @@ rhit.FinancePageController = class {
     document.querySelector("#pay-expense-amount").defaultValue = bill.amount;
     document.querySelector("#payBill").onclick = (event) => {
       const amount = document.querySelector("#pay-expense-amount").value;
-      rhit.fbAccountManager.updateFunds(amount*-1);
       rhit.fbFinanceManager.payBill(bill, amount);
     }
   }
@@ -225,12 +224,25 @@ rhit.fbFinanceManager = class {
 		return bill;
 	}
   payBill(bill, amount) {
-    //TODO make indiviudla bills for each person instead of making it an array
     if(bill.amount - amount == 0) {
       this.deleteBill(bill.docSnapshot.id);
     } else {
       this.updateBill(bill.amount - amount, bill.to, bill.description, bill.docSnapshot.id);
     }
+    const refto = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(bill.to);
+    refto.get().then((doc) => {
+      const data = doc.data();
+      refto.update(rhit.FB_KEY_FUNDS, +data.funds - +amount);
+    }).catch((error) => {
+      console.error("User: " + bill.to +" does not exist.")
+    });
+    const reffrom = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(bill.from);
+    reffrom.get().then((doc) => {
+      const data = doc.data();
+      reffrom.update(rhit.FB_KEY_FUNDS, +data.funds + +amount);
+    }).catch((error) => {
+      console.error("User: " + bill.from +" does not exist.")
+    });
   }
   deleteBill(id) {
     this._refBill.doc(id).delete();
