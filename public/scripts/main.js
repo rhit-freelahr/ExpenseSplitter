@@ -89,8 +89,10 @@ rhit.FinancePageController = class {
         billList.appendChild(newcard);
         newcard.addEventListener("click", (event) => this.billEventListeners(bill)); 
       }
-      yourBillList.appendChild(billsByYou);
-      billsByYou.addEventListener("click", (event) => this.yourBillEventListener(bill))
+      if(bill.to != rhit.fbAuthManager.uid) {
+        yourBillList.appendChild(billsByYou);
+        billsByYou.addEventListener("click", (event) => this.yourBillEventListener(bill));
+      }
     }
     const oldList = document.querySelector(".card-history");
     oldList.removeAttribute("class");
