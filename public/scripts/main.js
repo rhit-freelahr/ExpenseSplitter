@@ -31,6 +31,45 @@ function htmlToElement(html) {
 	return template.content.firstChild;
 }
 
+rhit.fbIndividualManager = class {
+  constructor() {
+    this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL);
+    this._documentSnapshots = [];
+    this._unsubscribe = null;
+  }
+
+  beginListening(changeListener) {
+    let query = this._ref;
+    this._unsubscribe = query.onSnapshot((querySnapshot) => {
+      this._documentSnapshots = querySnapshot.docs;
+      changeListener();
+   });
+  }
+  stopListening() {   
+		this._unsubscribe();
+	}
+  get length() {    
+		return this._documentSnapshots.length;
+	}
+  getIndividualAtIndex(index) {  
+		const docSnapshot = this._documentSnapshots[index];  
+		const individual = new rhit.Individual(
+      docSnapshot.get(rhit.FB_KEY_NAME),
+      docSnapshot.get(rhit.FB_KEY_NAME),
+      docSnapshot.get(rhit.FB_KEY_PICTURE),
+		);
+		return individual;
+	}
+}
+
+rhit.Individual = class {
+  constructor(funds, name, picture) {
+    this.funds = funds;
+    this.name = name;
+    this.picture = picture
+  }
+}
+
 rhit.FinancePageController = class {
   constructor() {
 
@@ -49,7 +88,7 @@ rhit.fbFinanceManager = class {
   }
 
   updateView() {
-    document.querySelector("#current-balance").innerHTML = `$${rhit.fbAccountManager.funds}`  
+    document.querySelectorAll("#current-balance").forEach((element) => element.innerHTML = `$${rhit.fbAccountManager.funds}`);
   }
 }
 
@@ -67,13 +106,15 @@ rhit.ExpensePageController = class {
     }
     
     rhit.fbAccountManager.beginListening(this.updateNavBar.bind(this));
-    rhit.fbExpenseManager.beginListening(this.updateList.bind(this));
+    rhit.fbExpenseManager.beginListening(this.updateGroupList.bind(this));
+    rhit.fbIndividualManager.beginListening(this.updateIndividualList.bind(this));
   }
 
   updateNavBar() {
-    document.querySelector("#current-balance").innerHTML = `$${rhit.fbAccountManager.funds}`  
+    document.querySelectorAll("#current-balance").forEach((element) => element.innerHTML = `$${rhit.fbAccountManager.funds}`);
   }
-  async updateList() {
+
+  async updateGroupList() {
     const groupList = htmlToElement('<div class="card-groups"></div>');
     for(let i = 0; i < rhit.fbExpenseManager.length; i++) {
       const group = rhit.fbExpenseManager.getGroupAtIndex(i);
@@ -81,7 +122,7 @@ rhit.ExpensePageController = class {
       if(this.inGroup(id,group)) {
         const newcard = await this._createGroup(group);
         groupList.appendChild(newcard);
-        newcard.addEventListener("click", (event) => this.cardEventListeners(event.currentTarget.id)); 
+        newcard.addEventListener("click", (event) => this.groupCardEventListeners(event.currentTarget.id)); 
       }
     }
     const oldList = document.querySelector(".card-groups");
@@ -89,9 +130,11 @@ rhit.ExpensePageController = class {
     oldList.hidden = true;
     oldList.parentElement.appendChild(groupList);
   }
+
   inGroup(id, group) {
     return group.individuals.includes(id);
   }
+
   async _createGroup(group) {
     return htmlToElement(
       `<button class="card-button" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-bs-whatever="@mdo" id="${group.id}">
@@ -112,6 +155,43 @@ rhit.ExpensePageController = class {
       </button>`
     );
   }
+
+  async updateIndividualList() {
+    const individualList = htmlToElement('<div class="card-individuals"></div>');
+    for(let i = 0; i < rhit.fbIndividualManager.length; i++) {
+      const individual = rhit.fbIndividualManager.getIndividualAtIndex(i);
+      const id = rhit.fbAuthManager.uid;
+      const newcard = await this._createIndividual(individual);
+      individualList.appendChild(newcard);
+    }
+    const oldList = document.querySelector(".card-individuals");
+    oldList.removeAttribute("class");
+    oldList.hidden = true;
+    oldList.parentElement.appendChild(individualList);
+  }
+
+  async _createIndividual(individual) {
+    return htmlToElement(
+      `<button class="card-button" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-bs-whatever="@mdo">
+      <div class="card-columns">
+        <div class="card" id="expense-card">
+          <div class="card-image">
+            <img class="card-img-top" src="${individual.picture}" alt="Card image cap">
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">${individual.name}</h5>
+            <p class="card-text"><small class="text-muted">Updated 3 mins ago</small></p>
+          </div>
+          <div class="card-amount">
+            <p class="amount">$${await this.totalAmount(individual)}</p>
+          </div>
+        </div>
+      </div>
+    </button>
+      `
+    )
+  }
+
   async totalAmount(id) {
     const ref = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(rhit.fbAuthManager.uid).collection(rhit.FB_COLLECTION_BILL).get();
     let result = await ref.then((snapshot) => {
@@ -126,7 +206,7 @@ rhit.ExpensePageController = class {
     return result;
   }
 
-  cardEventListeners(id) {
+  groupCardEventListeners(id) {
     document.querySelector("#sendBill").onclick = (event) => {
       const individuals = document.querySelector("#add-expense-recipients").value;
       const groupMembers = individuals.split(',');
@@ -141,9 +221,9 @@ rhit.ExpensePageController = class {
 
     const ref = firebase.firestore().collection(rhit.FB_COLLECTION_GROUP).doc(id).get();
     ref.then(snap => {
-    const data = snap.data();
-    document.querySelector("#addExpensebutton").onclick = (event) => {
-      document.querySelector("#add-expense-recipients").defaultValue = data.individuals.toString();
+      const data = snap.data();
+      document.querySelector("#addExpensebutton").onclick = (event) => {
+        document.querySelector("#add-expense-recipients").defaultValue = data.individuals.toString();
     }
   });
   }
@@ -227,18 +307,20 @@ rhit.AccountPageController = class {
       const profile = document.querySelector("#account-picture").value;
       rhit.fbAccountManager.updatePicture(profile);
     }
+    document.querySelector("#deposit-button").onclick = (event) => {
+      const funds = document.querySelector("#funds-field").value;
+      rhit.fbAccountManager.updateFunds(funds)
+    }
+    document.querySelector("#withdraw-button").onclick = (event) => {
+      const funds = document.querySelector("#funds-field").value;
+      rhit.fbAccountManager.updateFunds(funds*-1)
+    }
 
     rhit.fbAccountManager.beginListening(this.updateAccount.bind(this));
   }
 
   updateAccount() {
-    console.log("hi");
-  }
-  updateBills() {
-
-  }
-  _createBill() { // could be unnecessary
-
+    document.querySelectorAll("#current-balance").forEach((element) => element.innerHTML = `$${rhit.fbAccountManager.funds}`);
   }
 }
 
@@ -382,6 +464,7 @@ rhit.initializePage = function () {
   }
  
   if (document.querySelector("#expensePage")) {
+    rhit.fbIndividualManager = new rhit.fbIndividualManager();
     rhit.fbExpenseManager = new rhit.fbExpenseManager();
     new rhit.ExpensePageController();
   }
