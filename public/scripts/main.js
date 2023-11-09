@@ -89,6 +89,30 @@ rhit.FinancePageController = class {
     oldList.removeAttribute("class");
     oldList.hidden = true;
     oldList.parentElement.appendChild(billList);
+
+    let billName = document.querySelectorAll(".card-title");
+    let billAmount = document.querySelectorAll("#bill-amount");
+    let billArray = [];
+    billArray.push(['Expense', 'Bills'])
+    for(let i = 0; i < billName.length; i++) {
+      if(billArray[i]?.[0] == billName[i].innerHTML) {
+        billArray[i][1] += Number(billAmount[i].innerHTML.replace("$", ""));
+      } else {
+        billArray.push([billName[i].innerHTML, Number(billAmount[i].innerHTML.replace("$", ""))]);
+      }
+    }
+      // Piechart script: documentation @ https://developers.google.com/chart/interactive/docs/gallery/piechart
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(() => {
+
+      var data = google.visualization.arrayToDataTable(billArray);
+      
+      var options = {
+        fontName: 'Roboto',
+      };
+      var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+      chart.draw(data, options);
+    });
   }
 
   _createBill(bill) {
@@ -149,7 +173,10 @@ rhit.fbFinanceManager = class {
 	}
   updateBill(bill, amount) {
     if(+bill.amount - +amount == 0) {
-      this._refBill.doc(bill.docSnapshot.id).delete();
+      this._refBill.doc(bill.docSnapshot.id).delete().then(() => {
+        location.reload();
+      });
+
     } else {
       this._refBill.doc(bill.docSnapshot.id).update(rhit.FB_KEY_AMOUNT, +bill.amount - +amount)
     }
