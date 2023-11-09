@@ -176,7 +176,7 @@ rhit.FinancePageController = class {
     document.querySelector("#payBill").onclick = (event) => {
       const amount = document.querySelector("#pay-expense-amount").value;
       rhit.fbAccountManager.updateFunds(amount*-1);
-      rhit.fbFinanceManager.payBill(bill);
+      rhit.fbFinanceManager.payBill(bill, amount);
     }
   }
 
@@ -224,13 +224,13 @@ rhit.fbFinanceManager = class {
 		const bill = new rhit.Bill(docSnapshot);
 		return bill;
 	}
-  payBill(bill) {
-    let index = bill.to.indexOf(rhit.fbAuthManager.uid);
-    console.log(bill.to.splice(index, 1));
-    this._refBill.doc(bill.docSnapshot.id).update(rhit.FB_KEY_TO, bill.to.splice(index, 1)).then(() => {
-      location.reload();
-    });
-    console.log(bill.to);
+  payBill(bill, amount) {
+    //TODO make indiviudla bills for each person instead of making it an array
+    if(bill.amount - amount == 0) {
+      this.deleteBill(bill.docSnapshot.id);
+    } else {
+      this.updateBill(bill.amount - amount, bill.to, bill.description, bill.docSnapshot.id);
+    }
   }
   deleteBill(id) {
     this._refBill.doc(id).delete();
@@ -379,12 +379,10 @@ rhit.ExpensePageController = class {
 
   individualCardEventListeners(individual, id) {
     document.querySelector("#sendBill").onclick = (event) => {
-      let persons = [];
       const person = document.querySelector("#add-expense-recipients").value;
-      persons.push(person);
       const description = document.querySelector("#add-expense-description").value;
       const amount = document.querySelector("#add-expense-amount").value;
-      this._createBill(amount, id, persons, description);
+      this._createBill(amount, id, person, description);
     }
 
     const ref = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(individual.docSnapshot.id).get();
@@ -401,7 +399,9 @@ rhit.ExpensePageController = class {
       const description = document.querySelector("#add-expense-description").value;
       const amount = document.querySelector("#add-expense-amount").value;
       let amountforEach = amount/groupMembers.length;
-      this._createBill(amountforEach, id, groupMembers, description);
+      groupMembers.forEach((member) => {
+        this._createBill(amountforEach, id, member, description);
+      })
     }
 
     const ref = firebase.firestore().collection(rhit.FB_COLLECTION_GROUP).doc(group.docSnapshot.id).get();
