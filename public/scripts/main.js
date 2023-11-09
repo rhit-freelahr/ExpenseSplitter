@@ -181,7 +181,7 @@ rhit.FinancePageController = class {
     document.querySelector("#edit-expense-description").defaultValue = bill.description;
     document.querySelector("#edit-expense-amount").defaultValue = bill.amount;
     document.querySelector("#deleteBill").onclick = (event) => {
-      rhit.fbFinanceManager.deleteBill(id);
+      rhit.fbFinanceManager.deleteBill(bill.docSnapshot.id);
     }
     document.querySelector("#editBill").onclick = (event) => {
       let persons = [];
@@ -228,8 +228,8 @@ rhit.fbFinanceManager = class {
     });
     console.log(bill.to);
   }
-  deleteBill(bill) {
-    this._refBill.doc(bill.docSnapshot.id).delete();
+  deleteBill(id) {
+    this._refBill.doc(id).delete();
   }
   updateBill(amount, persons, description, id) {
     this._refBill.doc(id).update(rhit.FB_KEY_AMOUNT, amount);
