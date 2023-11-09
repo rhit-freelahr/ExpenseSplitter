@@ -90,7 +90,7 @@ rhit.FinancePageController = class {
         newcard.addEventListener("click", (event) => this.billEventListeners(bill)); 
       }
       yourBillList.appendChild(billsByYou);
-      billsByYou.addEventListener("click", (event) => this.yourBillEventListener(bill, event.currentTarget.id))
+      billsByYou.addEventListener("click", (event) => this.yourBillEventListener(bill))
     }
     const oldList = document.querySelector(".card-history");
     oldList.removeAttribute("class");
@@ -102,8 +102,8 @@ rhit.FinancePageController = class {
     yourOldList.hidden = true;
     yourOldList.parentElement.appendChild(yourBillList);
 
-    let billName = document.querySelectorAll(".card-title");
-    let billAmount = document.querySelectorAll("#bill-amount");
+    let billName = document.querySelectorAll("#bill-title-to-you");
+    let billAmount = document.querySelectorAll("#bill-amount-to-you");
     let billArray = [];
     billArray.push(['Expense', 'Bills'])
     for(let i = 0; i < billName.length; i++) {
@@ -130,16 +130,16 @@ rhit.FinancePageController = class {
   _createBill(bill) {
       return htmlToElement(
         `
-        <button class="card-button" data-bs-toggle="modal" data-bs-target="#payExpenseModal" data-bs-whatever="@mdo" id="${bill.docSnapshot.id}">
+        <button class="card-button" data-bs-toggle="modal" data-bs-target="#payExpenseModal" data-bs-whatever="@mdo">
           <div class="card-columns">
             <div class="card" id="finance-card">
               <div class="card-body">
-                <h5 class="card-title">${bill.from}</h5>
+                <h5 class="card-title" id="bill-title-to-you">${bill.from}</h5>
                 <p class="card-text"><small class="text-muted">${bill.description}</small></p>
               </div>
             <div class="card-amount">
               <hr class="vl" id="bill-vl">
-              <p class="amount" id="bill-amount">$${bill.amount}</p>
+              <p class="amount" id="bill-amount bill-amount-to-you">$${bill.amount}</p>
             </div>
           </div>
         </div>
@@ -150,7 +150,7 @@ rhit.FinancePageController = class {
   _createYourBill(bill) {
     return htmlToElement(
       `
-      <button class="card-button" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-bs-whatever="@mdo" id="${bill.docSnapshot.id}">
+      <button class="card-button" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-bs-whatever="@mdo">
         <div class="card-columns">
           <div class="card" id="finance-card">
             <div class="card-body">
@@ -176,12 +176,20 @@ rhit.FinancePageController = class {
     }
   }
 
-  yourBillEventListener(bill, id) {
+  yourBillEventListener(bill) {
     document.querySelector("#edit-expense-recipients").defaultValue = bill.to.toString();
     document.querySelector("#edit-expense-description").defaultValue = bill.description;
-    document.querySelector("#edit-amount").defaultValue = bill.amount;
+    document.querySelector("#edit-expense-amount").defaultValue = bill.amount;
     document.querySelector("#deleteBill").onclick = (event) => {
-      rhit.bill
+      rhit.fbFinanceManager.deleteBill(id);
+    }
+    document.querySelector("#editBill").onclick = (event) => {
+      let persons = [];
+      const person = document.querySelector("#edit-expense-recipients").value;
+      persons.push(person);
+      const description = document.querySelector("#edit-expense-description").value;
+      const amount = document.querySelector("#edit-expense-amount").value;
+      rhit.fbFinanceManager.updateBill(amount, persons, description, bill.docSnapshot.id);
     }
   }
 }
@@ -223,6 +231,12 @@ rhit.fbFinanceManager = class {
   deleteBill(bill) {
     this._refBill.doc(bill.docSnapshot.id).delete();
   }
+  updateBill(amount, persons, description, id) {
+    this._refBill.doc(id).update(rhit.FB_KEY_AMOUNT, amount);
+    this._refBill.doc(id).update(rhit.FB_KEY_INDIVIDUALS, persons);
+    this._refBill.doc(id).update(rhit.FB_KEY_DESCRIPTION, description);
+
+  }
 }
 
 rhit.Bill = class {
@@ -232,7 +246,6 @@ rhit.Bill = class {
     this.description = docSnapshot.get(rhit.FB_KEY_DESCRIPTION);
     this.to = docSnapshot.get(rhit.FB_KEY_TO);
     this.from = docSnapshot.get(rhit.FB_KEY_FROM);
-    this.id = docSnapshot.get(rhit.FB_KEY_ID); 
   }
 }
 
