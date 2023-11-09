@@ -225,20 +225,30 @@ rhit.fbFinanceManager = class {
 		const bill = new rhit.Bill(docSnapshot);
 		return bill;
 	}
-  payBill(bill, amount) {
+  async payBill(bill, amount) {
+    const refto = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(bill.to);
+    const reffrom = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(bill.from);
+
+    await refto.get().then((doc) => {
+      const data = doc.data();
+      if(Number(+data.funds - +amount) < 0) {
+        throw new Error("INSUFFICIENT FUNDS");
+      }
+    }).catch((error) => {
+      return Promise.reject(error);
+    });
+
     if(bill.amount - amount == 0) {
       this.deleteBill(bill.docSnapshot.id);
     } else {
       this.updateBill(bill.amount - amount, bill.to, bill.description, bill.docSnapshot.id);
     }
-    const refto = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(bill.to);
     refto.get().then((doc) => {
       const data = doc.data();
       refto.update(rhit.FB_KEY_FUNDS, +data.funds - +amount);
     }).catch((error) => {
       console.error("User: " + bill.to +" does not exist.")
     });
-    const reffrom = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(bill.from);
     reffrom.get().then((doc) => {
       const data = doc.data();
       reffrom.update(rhit.FB_KEY_FUNDS, +data.funds + +amount);
@@ -676,16 +686,3 @@ rhit.main = function () {
 };
 
 rhit.main();
-
-    // ref = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL);
-    // console.log(ref);
-    // ref.doc("test").set({
-    //   [rhit.FB_KEY_FUNDS]: 20,
-    //   [rhit.FB_KEY_NAME]: "Hunter",
-    //   [rhit.FB_KEY_PICTURE]: "hello",
-    // });
-
-    // ref.doc("test").collection(rhit.FB_COLLECTION_BILL).add({
-    //   [rhit.FB_KEY_AMOUNT]: 25,
-    //   [rhit.FB_KEY_FROM]: "Hunter",
-    // });
