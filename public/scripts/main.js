@@ -76,7 +76,7 @@ rhit.FinancePageController = class {
   }
 
   updateNavBar() {
-    document.querySelectorAll("#current-balance").forEach((element) => element.innerHTML = `$${rhit.fbAccountManager.funds}`);
+    document.querySelectorAll("#current-balance").forEach((element) => element.innerHTML = `$${parseFloat(rhit.fbAccountManager.funds).toFixed(2)}`);
   }
   updateView() {
     const billList = htmlToElement('<div class="card-history"></div>');
@@ -137,10 +137,12 @@ rhit.FinancePageController = class {
                 <h5 class="card-title" id="bill-title-to-you">${bill.from}</h5>
                 <p class="card-text"><small class="text-muted">${bill.description}</small></p>
               </div>
-            <div class="card-amount">
-              <hr class="vl" id="bill-vl">
-              <p class="amount" id="bill-amount-to-you">$${bill.amount}</p>
-            </div>
+              <div class="vl-holder">
+                <hr class="vl" id="bill-vl">
+              </div>
+              <div class="card-amount">
+                <p class="amount" id="bill-amount-to-you">$${parseFloat(bill.amount).toFixed(2)}</p>
+              </div>
           </div>
         </div>
       </button>`
@@ -157,10 +159,12 @@ rhit.FinancePageController = class {
               <h5 class="card-title">${bill.from}</h5>
               <p class="card-text"><small class="text-muted">${bill.description}</small></p>
             </div>
-          <div class="card-amount">
-            <hr class="vl" id="bill-vl">
-            <p class="amount" id="bill-amount">$${bill.amount}</p>
-          </div>
+            <div class="vl-holder">
+              <hr class="vl" id="bill-vl">
+            </div>
+            <div class="card-amount">
+              <p class="amount" id="bill-amount">$${parseFloat(bill.amount).toFixed(2)}</p>
+            </div>
         </div>
       </div>
     </button>`
@@ -277,7 +281,7 @@ rhit.ExpensePageController = class {
   }
 
   updateNavBar() {
-    document.querySelectorAll("#current-balance").forEach((element) => element.innerHTML = `$${rhit.fbAccountManager.funds}`);
+    document.querySelectorAll("#current-balance").forEach((element) => element.innerHTML = `$${parseFloat(rhit.fbAccountManager.funds).toFixed(2)}`);
   }
 
   async updateGroupList() {

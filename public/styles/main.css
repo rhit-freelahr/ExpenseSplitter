@@ -134,18 +134,19 @@ p {
 /* Finance Page */
 
 #financePage .card-amount {
-    display: inline-flex; 
-    justify-content: end; 
-    align-items: center;
+    display: flex;
+    justify-content: center;
 }
 
 #bill-vl {
     height: 62px; 
     margin: 0;
+    width: 1px;
 }
 
-#bill-amount {
-    padding: 0 7px;
+.vl-holder {
+    display: flex;  
+    justify-content: right;
 }
 
 
@@ -161,13 +162,13 @@ p {
 
 #expense-card {
     display: grid;
-    grid-template-columns: 2fr 3.5fr 2fr;
+    grid-template-columns: 2fr 3.75fr 2fr;
     align-items: center;
 }
 
 #finance-card {
     display: grid;
-    grid-template-columns: 3fr 2fr;
+    grid-template-columns: 3fr 1fr 1fr;
     align-items: center;
 }
 
