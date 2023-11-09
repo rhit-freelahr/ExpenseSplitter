@@ -139,7 +139,7 @@ rhit.FinancePageController = class {
               </div>
             <div class="card-amount">
               <hr class="vl" id="bill-vl">
-              <p class="amount" id="bill-amount bill-amount-to-you">$${bill.amount}</p>
+              <p class="amount" id="bill-amount-to-you">$${bill.amount}</p>
             </div>
           </div>
         </div>
