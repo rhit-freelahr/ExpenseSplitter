@@ -72,23 +72,89 @@ rhit.Individual = class {
 
 rhit.FinancePageController = class {
   constructor() {
-
+    document.querySelector("#deposit-button").onclick = (event) => {
+      const funds = document.querySelector("#funds-field").value;
+      rhit.fbAccountManager.updateFunds(funds)
+    }
+    document.querySelector("#withdraw-button").onclick = (event) => {
+      const funds = document.querySelector("#funds-field").value;
+      rhit.fbAccountManager.updateFunds(funds*-1)
+    }
+    rhit.fbAccountManager.beginListening(this.updateNavBar.bind(this));
+    rhit.fbFinanceManager.beginListening(this.updateView.bind(this));
   }
-  updateBills() {
 
+  updateNavBar() {
+    document.querySelectorAll("#current-balance").forEach((element) => element.innerHTML = `$${rhit.fbAccountManager.funds}`);
   }
-  _createBill() { // could be unnecessary
+  updateView() {
+    const billList = htmlToElement('<div class="card-history"></div>');
+    for(let i = 0; i < rhit.fbFinanceManager.length; i++) {
+      const bill = rhit.fbFinanceManager.getBillAtIndex(i);
+      const newcard = this._createBill(bill);
+      billList.appendChild(newcard);
+      }
+    const oldList = document.querySelector(".card-history");
+    oldList.removeAttribute("class");
+    oldList.hidden = true;
+    oldList.parentElement.appendChild(billList);
+  }
 
+  _createBill(bill) {
+      return htmlToElement(
+        `<div class="card-columns">
+        <div class="card" id="finance-card">
+          <div class="card-body">
+            <h5 class="card-title">${bill.from}</h5>
+            <p class="card-text"><small class="text-muted">${bill.description}</small></p>
+          </div>
+          <div class="card-amount">
+            <hr class="vl" id="bill-vl">
+            <p class="amount" id="bill-amount">$${bill.amount}</p>
+          </div>
+        </div>
+      </div>`
+      );
+    }  
   }
-}
 
 rhit.fbFinanceManager = class {
   constructor() {
-    rhit.fbAccountManager.beginListening(this.updateView.bind(this));
-  }
+    this._refBill = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(rhit.fbAuthManager.uid).collection(rhit.FB_COLLECTION_BILL);
 
-  updateView() {
-    document.querySelectorAll("#current-balance").forEach((element) => element.innerHTML = `$${rhit.fbAccountManager.funds}`);
+    this._documentSnapshotsBill = [];
+
+    this._unsubscribe = null;
+  }
+  beginListening(changeListener) {
+    let query = this._refBill;
+    this._unsubscribe = query.onSnapshot((querySnapshot) => {
+      this._documentSnapshotsBill = querySnapshot.docs;
+      changeListener();
+   });
+  }
+  stopListening() {   
+		this._unsubscribe();
+	}
+  get length() {    
+		return this._documentSnapshotsBill.length;
+	}
+  getBillAtIndex(index) {  
+		const docSnapshot = this._documentSnapshotsBill[index];  
+		const bill = new rhit.Bill(
+      docSnapshot.get(rhit.FB_KEY_AMOUNT),
+			docSnapshot.get(rhit.FB_KEY_DESCRIPTION),
+			docSnapshot.get(rhit.FB_KEY_FROM),
+		);
+		return bill;
+	}
+}
+
+rhit.Bill = class {
+  constructor(amount, description, from) {
+    this.amount = amount;
+    this.description = description;
+    this.from = from;
   }
 }
 
@@ -103,6 +169,15 @@ rhit.ExpensePageController = class {
       const description = document.querySelector("#group-description").value;
       const picture = document.querySelector("#group-picture").value;
       rhit.fbExpenseManager.add(name, description, groupMembers, picture);
+    }
+
+    document.querySelector("#deposit-button").onclick = (event) => {
+      const funds = document.querySelector("#funds-field").value;
+      rhit.fbAccountManager.updateFunds(funds)
+    }
+    document.querySelector("#withdraw-button").onclick = (event) => {
+      const funds = document.querySelector("#funds-field").value;
+      rhit.fbAccountManager.updateFunds(funds*-1)
     }
     
     rhit.fbAccountManager.beginListening(this.updateNavBar.bind(this));
@@ -122,7 +197,7 @@ rhit.ExpensePageController = class {
       if(this.inGroup(id,group)) {
         const newcard = await this._createGroup(group);
         groupList.appendChild(newcard);
-        newcard.addEventListener("click", (event) => this.groupCardEventListeners(event.currentTarget.id)); 
+        newcard.addEventListener("click", (event) => this.groupCardEventListeners(group, event.currentTarget.id)); 
       }
     }
     const oldList = document.querySelector(".card-groups");
@@ -180,7 +255,6 @@ rhit.ExpensePageController = class {
           </div>
           <div class="card-body">
             <h5 class="card-title">${individual.name}</h5>
-            <p class="card-text"><small class="text-muted">Updated 3 mins ago</small></p>
           </div>
           <div class="card-amount">
             <p class="amount">$${await this.totalAmount(individual)}</p>
@@ -198,15 +272,16 @@ rhit.ExpensePageController = class {
       let total = 0;
       snapshot.forEach((doc) => {
         const data = doc.data();
-        if(id == data.from)
-        total += data.amount;
+        if(id == data.id) {
+          total += data.amount;
+        }
       });
       return total;
     });
     return result;
   }
 
-  groupCardEventListeners(id) {
+  groupCardEventListeners(group, id) {
     document.querySelector("#sendBill").onclick = (event) => {
       const individuals = document.querySelector("#add-expense-recipients").value;
       const groupMembers = individuals.split(',');
@@ -214,8 +289,8 @@ rhit.ExpensePageController = class {
       const amount = document.querySelector("#add-expense-amount").value;
       groupMembers.forEach((member) => {
         let amountforEach = amount/groupMembers.length;
-        console.log(member);
-        this._createBill(amountforEach, id, member, description);
+
+        this._createBill(amountforEach, group.name, member, description, id);
       });
     }
 
@@ -231,12 +306,13 @@ rhit.ExpensePageController = class {
   updateBills() {
   }
 
-  _createBill(amount, from, member, description) {
+  _createBill(amount, from, member, description, id) {
     const ref = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(member).collection(rhit.FB_COLLECTION_BILL);
     ref.add({
       [rhit.FB_KEY_AMOUNT]: amount,
       [rhit.FB_KEY_FROM]: from,
       [rhit.FB_KEY_DESCRIPTION]: description,
+      [rhit.FB_KEY_ID]: id,
     });
   }
 }
@@ -357,7 +433,7 @@ rhit.fbAccountManager = class {
 		});
   }
   updateFunds(funds) {
-    this._ref.update(rhit.FB_KEY_FUNDS, funds)
+    this._ref.update(rhit.FB_KEY_FUNDS, +this.funds + +funds)
 		.then(function () {
 		})
 		.catch(function (error) {
@@ -457,6 +533,8 @@ rhit.checkForRedirects = function () {
 rhit.initializePage = function () {
   if(rhit.fbAuthManager.isSignedIn) {
     rhit.fbAccountManager = new rhit.fbAccountManager(rhit.fbAuthManager.user);
+    rhit.fbIndividualManager = new rhit.fbIndividualManager();
+    rhit.fbExpenseManager = new rhit.fbExpenseManager();
   }
   if (document.querySelector("#financePage")) {
     rhit.fbFinanceManager = new rhit.fbFinanceManager();
@@ -464,8 +542,6 @@ rhit.initializePage = function () {
   }
  
   if (document.querySelector("#expensePage")) {
-    rhit.fbIndividualManager = new rhit.fbIndividualManager();
-    rhit.fbExpenseManager = new rhit.fbExpenseManager();
     new rhit.ExpensePageController();
   }
  
