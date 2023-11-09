@@ -107,6 +107,31 @@
     </div>
   </div>
 
+  <!--PAY BILL-->
+  <div class="modal fade" id="payExpenseModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Pay Bill</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="add-expense-amount" class="col-form-label">Amount:</label>
+              <input type="text" class="form-control" id="pay-expense-amount">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn rose-button" id="payBill">Pay</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <script src="scripts/jquery.min.js"></script>
   <script src="scripts/popper.js"></script>
   <script src="/__/firebase/7.18.0/firebase-app.js"></script>

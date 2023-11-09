@@ -170,7 +170,7 @@ p {
     align-items: center;
 }
 
-.card-groups, .card-individuals {
+.card-groups, .card-individuals, .card-history {
     display: grid;
     justify-items: center;
     grid-template-columns: 1fr;
@@ -260,13 +260,9 @@ p {
     border-bottom-right-radius: 0;
 }
 
-#expense-button-footer #manage-button, #payExpensebutton {
+#expense-button-footer #manage-button, #addExpensebutton {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-}
-
-#financePage .card-columns {
-    padding-bottom: 5px;
 }
 
 .balance-display {
@@ -283,9 +279,6 @@ p {
     margin: 2px 0;
 }
 
-#addExpensebutton {
-    border-radius: 0;
-}
 
 /* Account Page */ 
 
