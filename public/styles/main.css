@@ -42,7 +42,7 @@ p {
     border-color: transparent;
 }
 
-.groups, .individuals, .bills, .finances {
+.groups, .individuals, .bills, .finances, .your-bills {
     padding: 0px 20px;
     max-width: 600px;
 }
@@ -170,7 +170,7 @@ p {
     align-items: center;
 }
 
-.card-groups, .card-individuals, .card-history {
+.card-groups, .card-individuals, .card-history, .card-your-bills {
     display: grid;
     justify-items: center;
     grid-template-columns: 1fr;
@@ -243,7 +243,7 @@ p {
 }
 
 .half-button {
-    width: 49%;
+    width: 50%;
 }
 
 #expense-button-footer, #account-button-footer, #finance-button-footer {
@@ -255,12 +255,12 @@ p {
     width: 100%;
 }
 
-#expense-button-footer #connect-button, #editExpensebutton {
+#expense-button-footer #connect-button, #editExpensebutton, #connectGroup {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
 
-#expense-button-footer #manage-button, #addExpensebutton {
+#expense-button-footer #manage-button, #connectIndividual {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }

@@ -50,12 +50,16 @@
         <div id="piechart" style="width: inherit; height: 200px;"></div>
       </div>
     </div>
+    <div class="your-bills">
+      <h1>YOUR BILLS</h1>
+      <hr>
+      <div class="card-your-bills"></div>
+    </div>
+    <br>
     <div class="bills">
       <h1>BILLS</h1>
       <hr>
-      <div class="history">
-        <div class="card-history">
-        </div>
+      <div class="card-history">
       </div>
     </div>
   </div>
@@ -108,6 +112,38 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           <button type="button" class="btn rose-button" id="payBill">Pay</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editExpenseModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Expense</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="edit-expense-recipients" class="col-form-label">Recipients:</label>
+              <input type="text" class="form-control" id="edit-expense-recipients">
+            </div>
+            <div class="mb-3">
+              <label for="edit-expense-description" class="col-form-label">Description:</label>
+              <input type="text" class="form-control" id="edit-expense-description">
+            </div>
+            <div class="mb-3">
+              <label for="edit-amount" class="col-form-label">Amount:</label>
+              <input type="text" class="form-control" id="edit-amount">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer" style="justify-content:unset;">
+          <button type="button" class="btn rose-button" id="deleteBill">Delete</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="margin-left: auto;">Close</button>
+          <button type="button" class="btn rose-button" id="editBill">Update</button>
         </div>
       </div>
     </div>

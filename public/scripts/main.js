@@ -7,6 +7,7 @@ rhit.FB_KEY_NAME = "name";
 rhit.FB_KEY_DESCRIPTION = "description";
 rhit.FB_KEY_AMOUNT = "amount";
 rhit.FB_KEY_FROM = "from";
+rhit.FB_KEY_TO = "to";
 rhit.FB_KEY_PICTURE = "picture";
 rhit.FB_KEY_FUNDS = "funds";
 rhit.FB_KEY_INDIVIDUALS = "individuals";
@@ -79,16 +80,27 @@ rhit.FinancePageController = class {
   }
   updateView() {
     const billList = htmlToElement('<div class="card-history"></div>');
+    const yourBillList = htmlToElement('<div class="card-your-bills"></div>');
     for(let i = 0; i < rhit.fbFinanceManager.length; i++) {
       const bill = rhit.fbFinanceManager.getBillAtIndex(i);
       const newcard = this._createBill(bill);
-      billList.appendChild(newcard);
-      newcard.addEventListener("click", (event) => this.billEventListeners(bill)); 
+      const billsByYou = this._createYourBill(bill);
+      if(bill.from != rhit.fbAuthManager.uid) {
+        billList.appendChild(newcard);
+        newcard.addEventListener("click", (event) => this.billEventListeners(bill)); 
       }
+      yourBillList.appendChild(billsByYou);
+      billsByYou.addEventListener("click", (event) => this.yourBillEventListener(bill, event.currentTarget.id))
+    }
     const oldList = document.querySelector(".card-history");
     oldList.removeAttribute("class");
     oldList.hidden = true;
     oldList.parentElement.appendChild(billList);
+    
+    const yourOldList = document.querySelector(".card-your-bills");
+    yourOldList.removeAttribute("class");
+    yourOldList.hidden = true;
+    yourOldList.parentElement.appendChild(yourBillList);
 
     let billName = document.querySelectorAll(".card-title");
     let billAmount = document.querySelectorAll("#bill-amount");
@@ -118,7 +130,7 @@ rhit.FinancePageController = class {
   _createBill(bill) {
       return htmlToElement(
         `
-        <button class="card-button" data-bs-toggle="modal" data-bs-target="#payExpenseModal" data-bs-whatever="@mdo">
+        <button class="card-button" data-bs-toggle="modal" data-bs-target="#payExpenseModal" data-bs-whatever="@mdo" id="${bill.docSnapshot.id}">
           <div class="card-columns">
             <div class="card" id="finance-card">
               <div class="card-body">
@@ -133,21 +145,50 @@ rhit.FinancePageController = class {
         </div>
       </button>`
       );
-  }  
+  } 
+  
+  _createYourBill(bill) {
+    return htmlToElement(
+      `
+      <button class="card-button" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-bs-whatever="@mdo" id="${bill.docSnapshot.id}">
+        <div class="card-columns">
+          <div class="card" id="finance-card">
+            <div class="card-body">
+              <h5 class="card-title">${bill.from}</h5>
+              <p class="card-text"><small class="text-muted">${bill.description}</small></p>
+            </div>
+          <div class="card-amount">
+            <hr class="vl" id="bill-vl">
+            <p class="amount" id="bill-amount">$${bill.amount}</p>
+          </div>
+        </div>
+      </div>
+    </button>`
+    );
+  }
 
   billEventListeners(bill) {
     document.querySelector("#pay-expense-amount").defaultValue = bill.amount;
     document.querySelector("#payBill").onclick = (event) => {
       const amount = document.querySelector("#pay-expense-amount").value;
       rhit.fbAccountManager.updateFunds(amount*-1);
-      rhit.fbFinanceManager.updateBill(bill, amount);
+      rhit.fbFinanceManager.payBill(bill);
+    }
+  }
+
+  yourBillEventListener(bill, id) {
+    document.querySelector("#edit-expense-recipients").defaultValue = bill.to.toString();
+    document.querySelector("#edit-expense-description").defaultValue = bill.description;
+    document.querySelector("#edit-amount").defaultValue = bill.amount;
+    document.querySelector("#deleteBill").onclick = (event) => {
+      rhit.bill
     }
   }
 }
 
 rhit.fbFinanceManager = class {
   constructor() {
-    this._refBill = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(rhit.fbAuthManager.uid).collection(rhit.FB_COLLECTION_BILL);
+    this._refBill = firebase.firestore().collection(rhit.FB_COLLECTION_BILL);
 
     this._documentSnapshotsBill = [];
 
@@ -171,15 +212,16 @@ rhit.fbFinanceManager = class {
 		const bill = new rhit.Bill(docSnapshot);
 		return bill;
 	}
-  updateBill(bill, amount) {
-    if(+bill.amount - +amount == 0) {
-      this._refBill.doc(bill.docSnapshot.id).delete().then(() => {
-        location.reload();
-      });
-
-    } else {
-      this._refBill.doc(bill.docSnapshot.id).update(rhit.FB_KEY_AMOUNT, +bill.amount - +amount)
-    }
+  payBill(bill) {
+    let index = bill.to.indexOf(rhit.fbAuthManager.uid);
+    console.log(bill.to.splice(index, 1));
+    this._refBill.doc(bill.docSnapshot.id).update(rhit.FB_KEY_TO, bill.to.splice(index, 1)).then(() => {
+      location.reload();
+    });
+    console.log(bill.to);
+  }
+  deleteBill(bill) {
+    this._refBill.doc(bill.docSnapshot.id).delete();
   }
 }
 
@@ -188,6 +230,7 @@ rhit.Bill = class {
     this.docSnapshot = docSnapshot;
     this.amount = docSnapshot.get(rhit.FB_KEY_AMOUNT);
     this.description = docSnapshot.get(rhit.FB_KEY_DESCRIPTION);
+    this.to = docSnapshot.get(rhit.FB_KEY_TO);
     this.from = docSnapshot.get(rhit.FB_KEY_FROM);
     this.id = docSnapshot.get(rhit.FB_KEY_ID); 
   }
@@ -232,7 +275,7 @@ rhit.ExpensePageController = class {
       if(this.inGroup(id,group)) {
         const newcard = await this._createGroup(group);
         groupList.appendChild(newcard);
-        newcard.addEventListener("click", (event) => this.groupCardEventListeners(group)); 
+        newcard.addEventListener("click", (event) => this.groupCardEventListeners(group, id)); 
       }
     }
     const oldList = document.querySelector(".card-groups");
@@ -247,7 +290,7 @@ rhit.ExpensePageController = class {
 
   async _createGroup(group) {
     return htmlToElement(
-      `<button class="card-button" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-bs-whatever="@mdo" id="">
+      `<button class="card-button" data-bs-toggle="modal" data-bs-target="#addModal" data-bs-whatever="@mdo" id="">
         <div class="card-columns">
           <div class="card" id="expense-card">
             <div class="card-image">
@@ -272,7 +315,8 @@ rhit.ExpensePageController = class {
       const individual = rhit.fbIndividualManager.getIndividualAtIndex(i);
       const newcard = await this._createIndividual(individual);
       individualList.appendChild(newcard);
-      newcard.addEventListener("click", (event) => this.individualCardEventListeners(individual)); 
+      const id = rhit.fbAuthManager.uid;
+      newcard.addEventListener("click", (event) => this.individualCardEventListeners(individual, id)); 
     }
     const oldList = document.querySelector(".card-individuals");
     oldList.removeAttribute("class");
@@ -282,7 +326,7 @@ rhit.ExpensePageController = class {
 
   async _createIndividual(individual) {
     return htmlToElement(
-      `<button class="card-button" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-bs-whatever="@mdo">
+      `<button class="card-button" data-bs-toggle="modal" data-bs-target="#addModal" data-bs-whatever="@mdo">
       <div class="card-columns">
         <div class="card" id="expense-card">
           <div class="card-image">
@@ -316,52 +360,47 @@ rhit.ExpensePageController = class {
     return result;
   }
 
-  individualCardEventListeners(individual) {
+  individualCardEventListeners(individual, id) {
     document.querySelector("#sendBill").onclick = (event) => {
+      let persons = [];
       const person = document.querySelector("#add-expense-recipients").value;
+      persons.push(person);
       const description = document.querySelector("#add-expense-description").value;
       const amount = document.querySelector("#add-expense-amount").value;
-      this._createBill(amount, individual.name, person, description, individual.docSnapshot.id);
+      this._createBill(amount, id, persons, description);
     }
 
     const ref = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(individual.docSnapshot.id).get();
     ref.then(snap => {
       const data = snap.data();
-      document.querySelector("#addExpensebutton").onclick = (event) => {
         document.querySelector("#add-expense-recipients").defaultValue = individual.docSnapshot.id;
-    }
   });
   }
 
-  groupCardEventListeners(group) {
+  groupCardEventListeners(group, id) {
     document.querySelector("#sendBill").onclick = (event) => {
       const individuals = document.querySelector("#add-expense-recipients").value;
       const groupMembers = individuals.split(',');
       const description = document.querySelector("#add-expense-description").value;
       const amount = document.querySelector("#add-expense-amount").value;
-      groupMembers.forEach((member) => {
-        let amountforEach = amount/groupMembers.length;
-
-        this._createBill(amountforEach, group.name, member, description, group.docSnapshot.id);
-      });
+      let amountforEach = amount/groupMembers.length;
+      this._createBill(amountforEach, id, groupMembers, description);
     }
 
     const ref = firebase.firestore().collection(rhit.FB_COLLECTION_GROUP).doc(group.docSnapshot.id).get();
     ref.then(snap => {
       const data = snap.data();
-      document.querySelector("#addExpensebutton").onclick = (event) => {
         document.querySelector("#add-expense-recipients").defaultValue = data.individuals.toString();
-    }
   });
   }
 
-  _createBill(amount, from, member, description, id) {
-    const ref = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(member).collection(rhit.FB_COLLECTION_BILL);
+  _createBill(amount, from, members, description) {
+    const ref = firebase.firestore().collection(rhit.FB_COLLECTION_BILL)
     ref.add({
       [rhit.FB_KEY_AMOUNT]: amount,
       [rhit.FB_KEY_FROM]: from,
+      [rhit.FB_KEY_TO]: members,
       [rhit.FB_KEY_DESCRIPTION]: description,
-      [rhit.FB_KEY_ID]: id,
     });
   }
 }

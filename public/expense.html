@@ -64,23 +64,6 @@
   </div>
 
   <!--Card Modal-->
-  <div class="modal fade" id="editExpenseModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">ADD</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body" style="display: flex;">
-          <a href="#" role="button" class="btn half-button rose-button" id="editExpensebutton" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editModal" data-bs-whatever="@mdo">EDIT</a>
-          <a href="#" role="button" class="btn half-button rose-button" id="addExpensebutton" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#addModal" data-bs-whatever="@mdo">ADD</a>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary full-button" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -113,38 +96,6 @@
     </div>
   </div>
 
-  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Expense</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form>
-            <div class="mb-3">
-              <label for="edit-expense-recipients" class="col-form-label">Recipients:</label>
-              <input type="text" class="form-control" id="edit-expense-recipients">
-            </div>
-            <div class="mb-3">
-              <label for="edit-expense-description" class="col-form-label">Description:</label>
-              <input type="text" class="form-control" id="edit-expense-description">
-            </div>
-            <div class="mb-3">
-              <label for="edit-amount" class="col-form-label">Amount:</label>
-              <input type="text" class="form-control" id="edit-amount">
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer" style="justify-content:unset;">
-          <button type="button" class="btn rose-button">Delete</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="margin-left: auto;">Close</button>
-          <button type="button" class="btn rose-button" id="editBill">Send</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!--Connect Modal-->
   <div class="modal fade" id="connectModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -154,8 +105,8 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" style="display: flex;">
-          <a href="#" role="button" class="btn half-button rose-button" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#addGroupModal">GROUP</a>
-          <a href="#" role="button" class="btn half-button rose-button" data-bs-dismiss="modal" style="margin-left: auto;" data-bs-toggle="modal" data-bs-target="#addIndividualModal">INDIVIDUAL</a>
+          <a href="#" role="button" class="btn half-button rose-button" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#addGroupModal" id="connectGroup">GROUP</a>
+          <a href="#" role="button" class="btn half-button rose-button" data-bs-dismiss="modal" style="margin-left: auto;" data-bs-toggle="modal" data-bs-target="#addIndividualModal" id="connectIndividual">INDIVIDUAL</a>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary full-button" data-bs-dismiss="modal">Close</button>
