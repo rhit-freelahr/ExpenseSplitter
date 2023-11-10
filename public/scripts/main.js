@@ -288,7 +288,7 @@ rhit.ExpensePageController = class {
       const name = document.querySelector("#group-name").value;
       const description = document.querySelector("#group-description").value;
       const picture = document.querySelector("#group-picture").value;
-      rhit.fbExpenseManager.add(name, description, groupMembers, picture);
+      rhit.fbGroupManager.add(name, description, groupMembers, picture);
     }
 
     document.querySelector("#deposit-button").onclick = (event) => {
@@ -306,7 +306,7 @@ rhit.ExpensePageController = class {
     }
     
     rhit.fbAccountManager.beginListening(this.updateNavBar.bind(this));
-    rhit.fbExpenseManager.beginListening(this.updateGroupList.bind(this));
+    rhit.fbGroupManager.beginListening(this.updateGroupList.bind(this));
     rhit.fbIndividualManager.beginListening(this.updateIndividualList.bind(this));
   }
 
@@ -316,8 +316,8 @@ rhit.ExpensePageController = class {
 
   async updateGroupList() {
     const groupList = htmlToElement('<div class="card-groups"></div>');
-    for(let i = 0; i < rhit.fbExpenseManager.length; i++) {
-      const group = rhit.fbExpenseManager.getGroupAtIndex(i);
+    for(let i = 0; i < rhit.fbGroupManager.length; i++) {
+      const group = rhit.fbGroupManager.getGroupAtIndex(i);
       const id = rhit.fbAuthManager.uid;
       if(this.inGroup(id,group)) {
         const newcard = await this._createGroup(group);
@@ -465,7 +465,7 @@ rhit.Group = class {
   }
 }
 
-rhit.fbExpenseManager = class {
+rhit.fbGroupManager = class {
   constructor() {
     this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_GROUP);
     this._documentSnapshots = [];
@@ -683,7 +683,7 @@ rhit.initializePage = function () {
   if(rhit.fbAuthManager.isSignedIn) {
     rhit.fbAccountManager = new rhit.fbAccountManager(rhit.fbAuthManager.user);
     rhit.fbIndividualManager = new rhit.fbIndividualManager();
-    rhit.fbExpenseManager = new rhit.fbExpenseManager();
+    rhit.fbGroupManager = new rhit.fbGroupManager();
   }
   if (document.querySelector("#financePage")) {
     rhit.fbFinanceManager = new rhit.fbFinanceManager();
