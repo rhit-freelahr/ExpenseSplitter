@@ -179,6 +179,7 @@ rhit.FinancePageController = class {
     document.querySelector("#payBill").onclick = (event) => {
       const amount = document.querySelector("#pay-expense-amount").value;
       rhit.fbFinanceManager.payBill(bill, amount);
+      document.querySelector("#pay-expense-amount").defaultValue = "";
     }
   }
 
@@ -190,12 +191,10 @@ rhit.FinancePageController = class {
       rhit.fbFinanceManager.deleteBill(bill.docSnapshot.id);
     }
     document.querySelector("#editBill").onclick = (event) => {
-      let persons = [];
       const person = document.querySelector("#edit-expense-recipients").value;
-      persons.push(person);
       const description = document.querySelector("#edit-expense-description").value;
       const amount = document.querySelector("#edit-expense-amount").value;
-      rhit.fbFinanceManager.updateBill(amount, persons, description, bill.docSnapshot.id);
+      rhit.fbFinanceManager.updateBill(amount, person, description, bill.docSnapshot.id);
     }
   }
 }
@@ -256,14 +255,16 @@ rhit.fbFinanceManager = class {
       this.deleteBill(bill.docSnapshot.id);
     } else {
       this.updateBill(bill.amount - amount, bill.to, bill.description, bill.docSnapshot.id);
+      bill.amount = parseFloat(bill.amount - amount).toFixed(2);
     }
   }
   deleteBill(id) {
     this._refBill.doc(id).delete();
   }
   updateBill(amount, persons, description, id) {
+    amount = parseFloat(amount).toFixed(2);
     this._refBill.doc(id).update(rhit.FB_KEY_AMOUNT, amount);
-    this._refBill.doc(id).update(rhit.FB_KEY_INDIVIDUALS, persons);
+    this._refBill.doc(id).update(rhit.FB_KEY_TO, persons);
     this._refBill.doc(id).update(rhit.FB_KEY_DESCRIPTION, description);
   }
 }
