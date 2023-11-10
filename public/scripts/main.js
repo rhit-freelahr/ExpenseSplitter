@@ -75,37 +75,13 @@ rhit.FinancePageController = class {
     }
     rhit.fbAccountManager.beginListening(this.updateNavBar.bind(this));
     rhit.fbFinanceManager.beginListening(this.updateView.bind(this));
+    rhit.fbFinanceManager.beginListening(this.updateChart.bind(this));
   }
 
   updateNavBar() {
     document.querySelectorAll("#current-balance").forEach((element) => element.innerHTML = `$${parseFloat(rhit.fbAccountManager.funds).toFixed(2)}`);
   }
-  updateView() {
-    const billList = htmlToElement('<div class="card-history"></div>');
-    const yourBillList = htmlToElement('<div class="card-your-bills"></div>');
-    for(let i = 0; i < rhit.fbFinanceManager.length; i++) {
-      const bill = rhit.fbFinanceManager.getBillAtIndex(i);
-      const newcard = this._createBill(bill);
-      const billsByYou = this._createYourBill(bill);
-      if(bill.from != rhit.fbAuthManager.uid) {
-        billList.appendChild(newcard);
-        newcard.addEventListener("click", (event) => this.billEventListeners(bill)); 
-      }
-      if(bill.to != rhit.fbAuthManager.uid) {
-        yourBillList.appendChild(billsByYou);
-        billsByYou.addEventListener("click", (event) => this.yourBillEventListener(bill));
-      }
-    }
-    const oldList = document.querySelector(".card-history");
-    oldList.removeAttribute("class");
-    oldList.hidden = true;
-    oldList.parentElement.appendChild(billList);
-    
-    const yourOldList = document.querySelector(".card-your-bills");
-    yourOldList.removeAttribute("class");
-    yourOldList.hidden = true;
-    yourOldList.parentElement.appendChild(yourBillList);
-
+  updateChart() {
     let billName = document.querySelectorAll("#bill-title-to-you");
     let billAmount = document.querySelectorAll("#bill-amount-to-you");
     let billArray = [];
@@ -129,6 +105,29 @@ rhit.FinancePageController = class {
       var chart = new google.visualization.PieChart(document.getElementById('piechart'));
       chart.draw(data, options);
     });
+  }
+  updateView() {
+    const oldList = document.querySelector(".card-history");
+    while (oldList.firstChild) {
+      oldList.removeChild(oldList.lastChild);
+    }
+    const yourOldList = document.querySelector(".card-your-bills");
+    while (yourOldList.firstChild) {
+      yourOldList.removeChild(yourOldList.lastChild);
+    }
+    for(let i = 0; i < rhit.fbFinanceManager.length; i++) {
+      const bill = rhit.fbFinanceManager.getBillAtIndex(i);
+      const newcard = this._createBill(bill);
+      const billsByYou = this._createYourBill(bill);
+      if(bill.from != rhit.fbAuthManager.uid) {
+        oldList.appendChild(newcard);
+        newcard.addEventListener("click", (event) => this.billEventListeners(bill)); 
+      }
+      if(bill.to != rhit.fbAuthManager.uid) {
+        yourOldList.appendChild(billsByYou);
+        billsByYou.addEventListener("click", (event) => this.yourBillEventListener(bill));
+      }
+    }
   }
 
   _createBill(bill) {
@@ -228,6 +227,7 @@ rhit.fbFinanceManager = class {
 		return bill;
 	}
   async payBill(bill, amount) {
+    amount = parseFloat(amount).toFixed(2);
     const refto = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(bill.to);
     const reffrom = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(bill.from);
 
