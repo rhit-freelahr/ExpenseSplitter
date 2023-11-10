@@ -240,11 +240,6 @@ rhit.fbFinanceManager = class {
       return Promise.reject(error);
     });
 
-    if(bill.amount - amount == 0) {
-      this.deleteBill(bill.docSnapshot.id);
-    } else {
-      this.updateBill(bill.amount - amount, bill.to, bill.description, bill.docSnapshot.id);
-    }
     await refto.get().then((doc) => {
       const data = doc.data();
       refto.update(rhit.FB_KEY_FUNDS, +data.funds - +amount);
@@ -257,6 +252,11 @@ rhit.fbFinanceManager = class {
     }).catch((error) => {
       console.error("User: " + bill.from +" does not exist.")
     });
+    if(bill.amount - amount == 0) {
+      this.deleteBill(bill.docSnapshot.id);
+    } else {
+      this.updateBill(bill.amount - amount, bill.to, bill.description, bill.docSnapshot.id);
+    }
   }
   deleteBill(id) {
     this._refBill.doc(id).delete();
@@ -265,7 +265,6 @@ rhit.fbFinanceManager = class {
     this._refBill.doc(id).update(rhit.FB_KEY_AMOUNT, amount);
     this._refBill.doc(id).update(rhit.FB_KEY_INDIVIDUALS, persons);
     this._refBill.doc(id).update(rhit.FB_KEY_DESCRIPTION, description);
-
   }
 }
 
