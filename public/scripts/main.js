@@ -159,7 +159,7 @@ rhit.FinancePageController = class {
         <div class="card-columns">
           <div class="card" id="finance-card">
             <div class="card-body">
-              <h5 class="card-title">${bill.from}</h5>
+              <h5 class="card-title">${bill.to}</h5>
               <p class="card-text"><small class="text-muted">${bill.description}</small></p>
             </div>
             <div class="vl-holder">
@@ -178,8 +178,12 @@ rhit.FinancePageController = class {
     document.querySelector("#pay-expense-amount").defaultValue = bill.amount;
     document.querySelector("#payBill").onclick = (event) => {
       const amount = document.querySelector("#pay-expense-amount").value;
-      rhit.fbFinanceManager.payBill(bill, amount);
-      document.querySelector("#pay-expense-amount").defaultValue = "";
+      if(amount > 0) {
+        rhit.fbFinanceManager.payBill(bill, amount);
+        document.querySelector("#pay-expense-amount").defaultValue = "";
+      } else {
+        console.error("Amount is less than 0");
+      }
     }
   }
 
@@ -194,7 +198,11 @@ rhit.FinancePageController = class {
       const person = document.querySelector("#edit-expense-recipients").value;
       const description = document.querySelector("#edit-expense-description").value;
       const amount = document.querySelector("#edit-expense-amount").value;
-      rhit.fbFinanceManager.updateBill(amount, person, description, bill.docSnapshot.id);
+      if(amount > 0) {
+        rhit.fbFinanceManager.updateBill(amount, person, description, bill.docSnapshot.id);
+      } else {
+        console.error("Amount is less than 0");
+      }
     }
   }
 }
@@ -416,7 +424,11 @@ rhit.ExpensePageController = class {
       const person = document.querySelector("#add-expense-recipients").value;
       const description = document.querySelector("#add-expense-description").value;
       const amount = document.querySelector("#add-expense-amount").value;
-      this._createBill(amount, id, person, description);
+      if(amount > 0) {
+        this._createBill(amount, id, person, description);
+      } else {
+        console.error("Amount is less than 0");
+      }
     }
 
     const ref = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(individual.docSnapshot.id).get();
@@ -432,10 +444,14 @@ rhit.ExpensePageController = class {
       const groupMembers = individuals.split(',');
       const description = document.querySelector("#add-expense-description").value;
       const amount = document.querySelector("#add-expense-amount").value;
-      let amountforEach = amount/groupMembers.length;
-      groupMembers.forEach((member) => {
-        this._createBill(parseFloat(amountforEach).toFixed(2), id, member, description);
-      })
+      if(amount > 0) {
+        let amountforEach = amount/groupMembers.length;
+        groupMembers.forEach((member) => {
+          this._createBill(parseFloat(amountforEach).toFixed(2), id, member, description);
+        });
+      } else {
+        console.error("Amount is less than 0");
+      }
     }
 
     const ref = firebase.firestore().collection(rhit.FB_COLLECTION_GROUP).doc(group.docSnapshot.id).get();
