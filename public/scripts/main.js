@@ -12,6 +12,7 @@ rhit.FB_KEY_PICTURE = "picture";
 rhit.FB_KEY_FUNDS = "funds";
 rhit.FB_KEY_INDIVIDUALS = "individuals";
 rhit.FB_KEY_ID = "id";
+rhit.FB_KEY_FRIENDS = "friends";
 
 
 rhit.fbAccountManager = null;
@@ -57,6 +58,7 @@ rhit.Individual = class {
     this.funds = docSnapshot.get(rhit.FB_KEY_FUNDS);
     this.name = docSnapshot.get(rhit.FB_KEY_NAME);
     this.picture = docSnapshot.get(rhit.FB_KEY_PICTURE);
+    this.friends = docSnapshot.get(rhit.FB_KEY_FRIENDS);
     this.docSnapshot = docSnapshot;
   }
 }
@@ -243,13 +245,13 @@ rhit.fbFinanceManager = class {
     } else {
       this.updateBill(bill.amount - amount, bill.to, bill.description, bill.docSnapshot.id);
     }
-    refto.get().then((doc) => {
+    await refto.get().then((doc) => {
       const data = doc.data();
       refto.update(rhit.FB_KEY_FUNDS, +data.funds - +amount);
     }).catch((error) => {
       console.error("User: " + bill.to +" does not exist.")
     });
-    reffrom.get().then((doc) => {
+    await reffrom.get().then((doc) => {
       const data = doc.data();
       reffrom.update(rhit.FB_KEY_FUNDS, +data.funds + +amount);
     }).catch((error) => {
@@ -297,6 +299,11 @@ rhit.ExpensePageController = class {
     document.querySelector("#withdraw-button").onclick = (event) => {
       const funds = document.querySelector("#funds-field").value;
       rhit.fbAccountManager.updateFunds(funds*-1)
+    }
+
+    document.querySelector("#individual-add").onclick = (event) => {
+      const friend = document.querySelector("#individual-name").value;
+      rhit.fbAccountManager.addFriend(friend)
     }
     
     rhit.fbAccountManager.beginListening(this.updateNavBar.bind(this));
@@ -354,10 +361,13 @@ rhit.ExpensePageController = class {
     const individualList = htmlToElement('<div class="card-individuals"></div>');
     for(let i = 0; i < rhit.fbIndividualManager.length; i++) {
       const individual = rhit.fbIndividualManager.getIndividualAtIndex(i);
+      // TODO if id in friends then display
       const newcard = await this._createIndividual(individual);
-      individualList.appendChild(newcard);
       const id = rhit.fbAuthManager.uid;
-      newcard.addEventListener("click", (event) => this.individualCardEventListeners(individual, id)); 
+      if(individual.friends.includes(id)) {
+        individualList.appendChild(newcard);
+        newcard.addEventListener("click", (event) => this.individualCardEventListeners(individual, id)); 
+      }
     }
     const oldList = document.querySelector(".card-individuals");
     oldList.removeAttribute("class");
@@ -424,7 +434,7 @@ rhit.ExpensePageController = class {
       const amount = document.querySelector("#add-expense-amount").value;
       let amountforEach = amount/groupMembers.length;
       groupMembers.forEach((member) => {
-        this._createBill(amountforEach, id, member, description);
+        this._createBill(parseFloat(amountforEach).toFixed(2), id, member, description);
       })
     }
 
@@ -540,6 +550,7 @@ rhit.fbAccountManager = class {
           [rhit.FB_KEY_FUNDS]: 0,
           [rhit.FB_KEY_NAME]: rhit.fbAuthManager.uid,
           [rhit.FB_KEY_PICTURE]: "https://www.getfoundquick.com/wp-content/uploads/2014/01/Capture-1.jpg", 
+          [rhit.FB_KEY_FRIENDS]: new Array(),
         });
 			}
 		});
@@ -570,6 +581,22 @@ rhit.fbAccountManager = class {
 		.catch(function (error) {
 			console.error("Error ", error);
 		});
+  }
+  addFriend(friend) {
+    let temp = this.friends;
+    temp.push(friend);
+    const ref = firebase.firestore().collection(rhit.FB_COLLECTION_INDIVIDUAL).doc(friend);
+    ref.get().then((doc) => {
+      const data = doc.data();
+      let temp2 = data.friends;
+      temp2.push(rhit.fbAuthManager.uid);
+      ref.update(rhit.FB_KEY_FRIENDS, temp2)
+    })
+    this._ref.update(rhit.FB_KEY_FRIENDS, temp)
+  }
+
+  get friends() {
+    return this._documentSnapshot.get(rhit.FB_KEY_FRIENDS);
   }
 
   get funds() {
