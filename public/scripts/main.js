@@ -566,6 +566,7 @@ rhit.fbAccountManager = class {
 		});
   }
   updateFunds(funds) {
+    funds = parseFloat(funds).toFixed(2);
     this._ref.update(rhit.FB_KEY_FUNDS, +this.funds + +funds)
 		.then(function () {
 		})
