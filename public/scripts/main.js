@@ -67,11 +67,19 @@ rhit.FinancePageController = class {
   constructor() {
     document.querySelector("#deposit-button").onclick = (event) => {
       const funds = document.querySelector("#funds-field").value;
-      rhit.fbAccountManager.updateFunds(funds)
+      if(Number(funds) > 0) {
+        rhit.fbAccountManager.updateFunds(funds);
+      } else {
+        console.error("Amount is less than 0");
+      }
     }
     document.querySelector("#withdraw-button").onclick = (event) => {
       const funds = document.querySelector("#funds-field").value;
-      rhit.fbAccountManager.updateFunds(funds*-1)
+      if(Number(funds) > 0 && Number(+rhit.fbAccountManager.funds - +funds) > 0) {
+        rhit.fbAccountManager.updateFunds(-1*funds);
+      } else {
+        console.error("Cannot withdraw funds");
+      }    
     }
     rhit.fbAccountManager.beginListening(this.updateNavBar.bind(this));
     rhit.fbFinanceManager.beginListening(this.updateView.bind(this));
@@ -302,11 +310,19 @@ rhit.ExpensePageController = class {
 
     document.querySelector("#deposit-button").onclick = (event) => {
       const funds = document.querySelector("#funds-field").value;
-      rhit.fbAccountManager.updateFunds(funds)
+      if(Number(funds) > 0) {
+        rhit.fbAccountManager.updateFunds(funds);
+      } else {
+        console.error("Amount is less than 0");
+      }
     }
     document.querySelector("#withdraw-button").onclick = (event) => {
       const funds = document.querySelector("#funds-field").value;
-      rhit.fbAccountManager.updateFunds(funds*-1)
+      if(Number(funds) > 0 && Number(+rhit.fbAccountManager.funds - +funds) > 0) {
+        rhit.fbAccountManager.updateFunds(-1*funds);
+      } else {
+        console.error("Cannot withdraw funds");
+      }    
     }
 
     document.querySelector("#individual-add").onclick = (event) => {
@@ -491,12 +507,11 @@ rhit.fbGroupManager = class {
 
   add(name, description, individuals, picture) {
     const ref = this._ref.doc();
-    ref.set({
+    ref.add({
       [rhit.FB_KEY_DESCRIPTION]: description,
       [rhit.FB_KEY_INDIVIDUALS]: individuals,
       [rhit.FB_KEY_NAME]: name,
       [rhit.FB_KEY_PICTURE]: picture,
-      [rhit.FB_KEY_ID]: ref.id
     });
   }
   beginListening(changeListener) {
@@ -534,11 +549,19 @@ rhit.AccountPageController = class {
     }
     document.querySelector("#deposit-button").onclick = (event) => {
       const funds = document.querySelector("#funds-field").value;
-      rhit.fbAccountManager.updateFunds(funds)
+      if(Number(funds) > 0) {
+        rhit.fbAccountManager.updateFunds(funds);
+      } else {
+        console.error("Amount is less than 0");
+      }
     }
     document.querySelector("#withdraw-button").onclick = (event) => {
       const funds = document.querySelector("#funds-field").value;
-      rhit.fbAccountManager.updateFunds(funds*-1)
+      if(Number(funds) > 0 && Number(+rhit.fbAccountManager.funds - +funds) > 0) {
+        rhit.fbAccountManager.updateFunds(-1*funds);
+      } else {
+        console.error("Cannot withdraw funds");
+      }    
     }
 
     rhit.fbAccountManager.beginListening(this.updateAccount.bind(this));
