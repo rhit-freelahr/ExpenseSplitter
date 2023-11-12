@@ -506,8 +506,7 @@ rhit.fbGroupManager = class {
   }
 
   add(name, description, individuals, picture) {
-    const ref = this._ref.doc();
-    ref.add({
+    this._ref.add({
       [rhit.FB_KEY_DESCRIPTION]: description,
       [rhit.FB_KEY_INDIVIDUALS]: individuals,
       [rhit.FB_KEY_NAME]: name,
