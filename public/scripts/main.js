@@ -75,7 +75,7 @@ rhit.FinancePageController = class {
     }
     document.querySelector("#withdraw-button").onclick = (event) => {
       const funds = document.querySelector("#funds-field").value;
-      if(Number(funds) > 0 && Number(+rhit.fbAccountManager.funds - +funds) > 0) {
+      if(Number(funds) > 0 && Number(+rhit.fbAccountManager.funds - +funds) >= 0) {
         rhit.fbAccountManager.updateFunds(-1*funds);
       } else {
         console.error("Cannot withdraw funds");
@@ -92,16 +92,28 @@ rhit.FinancePageController = class {
   updateChart() {
     let billName = document.querySelectorAll("#bill-title-to-you");
     let billAmount = document.querySelectorAll("#bill-amount-to-you");
+    
+    let map = new Map();
+
     let billArray = [];
-    billArray.push(['Expense', 'Bills'])
+    billArray.push(['Expense', 'Bills']);
     for(let i = 0; i < billName.length; i++) {
-      if(billArray[i]?.[0] == billName[i].innerHTML) {
-        billArray[i][1] += Number(billAmount[i].innerHTML.replace("$", ""));
+      if(map.has(billName[i].innerHTML)) {
+        let amount = map.get(billName[i].innerHTML);
+        map.set(billName[i].innerHTML, Number(billAmount[i].innerHTML.replace("$","")) + amount);
       } else {
-        billArray.push([billName[i].innerHTML, Number(billAmount[i].innerHTML.replace("$", ""))]);
+        map.set(billName[i].innerHTML, Number(billAmount[i].innerHTML.replace("$","")));
       }
     }
-      // Piechart script: documentation @ https://developers.google.com/chart/interactive/docs/gallery/piechart
+
+    for (const [name, value] of map) {
+      billArray.push([ name, value ]);
+  }
+
+    console.log(billArray);
+
+    
+    // Piechart script: documentation @ https://developers.google.com/chart/interactive/docs/gallery/piechart
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(() => {
 
@@ -127,11 +139,11 @@ rhit.FinancePageController = class {
       const bill = rhit.fbFinanceManager.getBillAtIndex(i);
       const newcard = this._createBill(bill);
       const billsByYou = this._createYourBill(bill);
-      if(bill.from != rhit.fbAuthManager.uid) {
+      if(bill.to == rhit.fbAuthManager.uid) {
         oldList.appendChild(newcard);
         newcard.addEventListener("click", (event) => this.billEventListeners(bill)); 
       }
-      if(bill.to != rhit.fbAuthManager.uid) {
+      if(bill.from == rhit.fbAuthManager.uid) {
         yourOldList.appendChild(billsByYou);
         billsByYou.addEventListener("click", (event) => this.yourBillEventListener(bill));
       }
